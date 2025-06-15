@@ -1,5 +1,4 @@
 #include <Arduino.h>
-
 #include <MIDIUSB.h>
 #include <Encoder.h>
 
@@ -20,16 +19,13 @@ const byte custom_midi[enc_num] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
 //first 5 for encoders, next 8 for XKeys
 const byte buttonNotes[N_BUTTONS] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
 
-//const byte feedbackNotes[NUM_FEEDBACK_LEDS] = {56,57,58,59,60,61,62,63};
-//const int feedbackStartIndex = 5;
-
 //const int velocityScale[8] = {1, 1, 2, 2, 3, 3, 4, 4};  //defualt from first sketch
 const int velocityScale[8] = {1, 1, 2, 2, 3, 4, 5, 6};
 
 // Array to store current values for encoders 5-12 (absolute mode)
 int encoderValues[enc_num] = {0}; // Initialize all to 0
 
-// i wired the encoders backwards so the pins are reversed here
+// I wired the encoders backwards so the pins are reversed here
 const int enc_pins[enc_num][2] = {
   {1,0}, {3,2}, {5,4}, {7,6}, {9,8}, {11,10}, {15,14},
   {17,16}, {19,18}, {21,20}, {23,22}, {25,24}, {27,26}
@@ -52,15 +48,12 @@ static int encoderBuffer[enc_num] = {0};
 
 void setup() {
   Serial.begin(115200);
-  Serial.print(" setup start ");
-
-  usbMIDI.sendControlChange(10, 42, 1, 0); // Port 1 only
-  usbMIDI.send_now();
+  Serial.print("EvoCmdWing Encoder setup");
 
   for (int i = 0; i < enc_num; i++) {
     encoders[i] = new Encoder(enc_pins[i][0], enc_pins[i][1]);
     lastPos[i] = encoders[i]->read();
-    // Initialize encoder values for absolute mode encoders (5-12) to 64 (middle)
+
     if (i >= 5) {
       encoderValues[i] = 0;
     }
@@ -68,16 +61,17 @@ void setup() {
   for (int i = 0; i < N_BUTTONS; i++) {
     pinMode(BUTTON_ARDUINO_PIN[i], INPUT_PULLUP);
   }
-  Serial.print(" setup end ");
+  Serial.print("Setup complete");
 }
 
 void loop() {
   handleEncoders();
   handleButtons();
-  handleIncomingMIDI();
   usbMIDI.send_now();
+
+  handleIncomingMIDI();
+
   checkSerialForReboot();
-  
 }
 
 void handleEncoders() {
@@ -127,6 +121,7 @@ void handleButtons() {
 }
 
 //setup for midi mode 3, can change to 2's comp mode 1 if needed
+// Using grandma3 plugin MidiEncoders from ProPlugins
 
 void sendMidiEncoder(int index, int direction) {
   unsigned long now = millis();
@@ -202,8 +197,6 @@ void handleIncomingMIDI() {
         }
       }
     }
-
-    // Optional: Print all incoming MIDI for debugging
     
     Serial.print("[MIDI IN] Type: ");
     switch (type) {
