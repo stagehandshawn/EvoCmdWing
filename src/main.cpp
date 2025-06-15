@@ -2,21 +2,23 @@
 
 #include <MIDIUSB.h>
 #include <Encoder.h>
-//#include <Adafruit_NeoPixel.h>
 
-//#define LED_PIN 22
-//#define NUM_FEEDBACK_LEDS 8
+
+void handleEncoders();
+void handleButtons();
+void sendMidiEncoder(int index, int direction);
+void handleIncomingMIDI();
+void checkSerialForReboot();
+
 
 const int enc_num = 13;
 const int N_BUTTONS = 13;
 
-
-
 //first 5 are for encoders, next 8 are for XKeys
-const byte custom_midi[enc_num] = {1, 2, 3, 4, 5, 24, 25, 26, 27, 28, 29, 30, 31};
+const byte custom_midi[enc_num] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
 
 //first 5 for encoders, next 8 for XKeys
-const byte buttonNotes[N_BUTTONS] = {6,7,8,9,10,32,33,34,35,36,37,38,39};
+const byte buttonNotes[N_BUTTONS] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
 
 //const byte feedbackNotes[NUM_FEEDBACK_LEDS] = {56,57,58,59,60,61,62,63};
 //const int feedbackStartIndex = 5;
@@ -24,6 +26,10 @@ const byte buttonNotes[N_BUTTONS] = {6,7,8,9,10,32,33,34,35,36,37,38,39};
 //const int velocityScale[8] = {1, 1, 2, 2, 3, 3, 4, 4};  //defualt from first sketch
 const int velocityScale[8] = {1, 1, 2, 2, 3, 4, 5, 6};
 
+// Array to store current values for encoders 5-12 (absolute mode)
+int encoderValues[enc_num] = {0}; // Initialize all to 0
+
+// i wired the encoders backwards so the pins are reversed here
 const int enc_pins[enc_num][2] = {
   {1,0}, {3,2}, {5,4}, {7,6}, {9,8}, {11,10}, {15,14},
   {17,16}, {19,18}, {21,20}, {23,22}, {25,24}, {27,26}
@@ -44,25 +50,20 @@ unsigned long lastDebounceTime[N_BUTTONS] = {0};
 unsigned long debounceDelay = 50;
 static int encoderBuffer[enc_num] = {0};
 
-//Adafruit_NeoPixel strip(NUM_FEEDBACK_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
-
 void setup() {
   Serial.begin(115200);
   Serial.print(" setup start ");
 
-
-  //strip.begin();
-  //strip.fill(strip.Color(255, 255, 0)); strip.show();
-  //delay(50);
-  //strip.show();
-
-  usbMIDI.sendControlChange(10, 42, 1, 0); // Port 1
-  usbMIDI.sendControlChange(11, 43, 1, 1); // Port 2
+  usbMIDI.sendControlChange(10, 42, 1, 0); // Port 1 only
   usbMIDI.send_now();
 
   for (int i = 0; i < enc_num; i++) {
     encoders[i] = new Encoder(enc_pins[i][0], enc_pins[i][1]);
     lastPos[i] = encoders[i]->read();
+    // Initialize encoder values for absolute mode encoders (5-12) to 64 (middle)
+    if (i >= 5) {
+      encoderValues[i] = 0;
+    }
   }
   for (int i = 0; i < N_BUTTONS; i++) {
     pinMode(BUTTON_ARDUINO_PIN[i], INPUT_PULLUP);
@@ -73,8 +74,10 @@ void setup() {
 void loop() {
   handleEncoders();
   handleButtons();
-//handleIncomingMIDI();
+  handleIncomingMIDI();
   usbMIDI.send_now();
+  
+  
 }
 
 void handleEncoders() {
@@ -103,11 +106,10 @@ void handleButtons() {
     if ((millis() - lastDebounceTime[i]) > debounceDelay) {
       if (reading != buttonPState[i]) {
         lastDebounceTime[i] = millis();
-        int cable = (i < 5) ? 0 : 1;
         int note = buttonNotes[i];
         int velocity = (reading == LOW) ? 1 : 0;
 
-        usbMIDI.sendNoteOn(note, velocity, midiCh, cable);
+        usbMIDI.sendNoteOn(note, velocity, midiCh, 0);
 
         Serial.print("[MIDI OUT] Button ");
         Serial.print(i);
@@ -116,9 +118,7 @@ void handleButtons() {
         Serial.print(" | Vel: ");
         Serial.print(velocity);
         Serial.print(" | Ch: ");
-        Serial.print(midiCh);
-        Serial.print(" | Port: ");
-        Serial.println(cable + 1);
+        Serial.println(midiCh);
 
         buttonPState[i] = reading;
       }
@@ -133,18 +133,33 @@ void sendMidiEncoder(int index, int direction) {
   unsigned long elapsed = now - lastMoveTime[index];
   lastMoveTime[index] = now;
 
-  int level = constrain((int)(elapsed / 15), 0, 7);
-  int scaled = velocityScale[7 - level];  // fast = high index = smaller scaled value
-
   int final_value;
-  if (direction > 0) {
-    final_value = scaled;  // ➕ right = 1–8 (no change)
+
+  if (index < 5) {
+    // First 5 encoders: velocity-based mode for plugin
+    int level = constrain((int)(elapsed / 15), 0, 7);
+    int scaled = velocityScale[7 - level];  // fast = high index = smaller scaled value
+
+    if (direction > 0) {
+      final_value = scaled;  // ➕ right = 1–8 (no change)
+    } else {
+      final_value = 72 - (scaled - 1);  // ➖ left: 1 → 72, 2 → 71, ..., 6 → 67
+    }
   } else {
-    final_value = 72 - (scaled - 1);  // ➖ left: 1 → 72, 2 → 71, ..., 6 → 67
+    // Encoders 5-12: absolute value mode (0-127)
+    int level = constrain((int)(elapsed / 15), 0, 7);
+    int step = velocityScale[7 - level];  // Use same velocity scaling for step size
+    
+    if (direction > 0) {
+      encoderValues[index] = constrain(encoderValues[index] + step, 0, 127);
+    } else {
+      encoderValues[index] = constrain(encoderValues[index] - step, 0, 127);
+    }
+    
+    final_value = encoderValues[index];
   }
 
-  int cable = (index < 5) ? 0 : 1;
-  usbMIDI.sendControlChange(custom_midi[index], final_value, midiCh, cable);
+  usbMIDI.sendControlChange(custom_midi[index], final_value, midiCh, 0);
 
   Serial.print("[ENCODER] Index: ");
   Serial.print(index);
@@ -154,92 +169,89 @@ void sendMidiEncoder(int index, int direction) {
   Serial.print(custom_midi[index]);
   Serial.print(" | Value Sent: ");
   Serial.print(final_value);
+  if (index >= 5) {
+    Serial.print(" | Stored: ");
+    Serial.print(encoderValues[index]);
+  }
   Serial.print(" | Elapsed: ");
   Serial.print(elapsed);
-  Serial.print(" ms | Step: ");
-  Serial.print(scaled);
-  Serial.print(" | Port: ");
-  Serial.println(cable + 1);
+  Serial.println(" ms");
+}
+
+void handleIncomingMIDI() {
+  while (usbMIDI.read()) {
+    byte type = usbMIDI.getType();
+    byte ch = usbMIDI.getChannel();
+    byte d1 = usbMIDI.getData1();
+    byte d2 = usbMIDI.getData2();
+
+    // Only process CC messages on our MIDI channel
+    if (type == 0x0B && ch == midiCh) {  // CC message
+      // Check if this CC matches one of our encoders 5-12
+      for (int i = 5; i < enc_num; i++) {
+        if (d1 == custom_midi[i]) {
+          encoderValues[i] = constrain(d2, 0, 127);
+          
+          Serial.print("[MIDI IN] CC Update - Encoder ");
+          Serial.print(i);
+          Serial.print(" | CC: ");
+          Serial.print(d1);
+          Serial.print(" | Value: ");
+          Serial.println(encoderValues[i]);
+          break;
+        }
+      }
+    }
+
+    // Optional: Print all incoming MIDI for debugging
+    /*
+    Serial.print("[MIDI IN] Type: ");
+    switch (type) {
+      case 0x08: Serial.print("Note Off   "); break;
+      case 0x09: Serial.print("Note On    "); break;
+      case 0x0A: Serial.print("Aftertouch "); break;
+      case 0x0B: Serial.print("CC         "); break;
+      case 0x0C: Serial.print("Program    "); break;
+      case 0x0D: Serial.print("Channel Pressure"); break;
+      case 0x0E: Serial.print("Pitch Bend "); break;
+      default:   Serial.print("Other      "); break;
+    }
+    Serial.print(" Ch: "); Serial.print(ch);
+    Serial.print(" D1: "); Serial.print(d1);
+    Serial.print(" D2: "); Serial.println(d2);
+    */
+  }
 }
 
 
-
-
-
-
-// void handleIncomingMIDI() {
-//   while (usbMIDI.read()) {
-//     byte type = usbMIDI.getType();
-
-//     if (type == usbMIDI.SystemExclusive) {
-//       const uint8_t* sysex = usbMIDI.getSysExArray();
-//       unsigned int len = usbMIDI.getSysExArrayLength();
-
-//       Serial.print("[MIDI IN] SysEx: ");
-//       for (unsigned int i = 0; i < len; i++) {
-//         if (sysex[i] < 0x10) Serial.print("0");
-//         Serial.print(sysex[i], HEX);
-//         Serial.print(" ");
-//       }
-//       Serial.println();
-
-//       if (len >= 14 && sysex[0] == 0xF0 && sysex[1] == 0x00 && sysex[2] == 0x00 && sysex[3] == 0x66 && sysex[4] == 0x14 && sysex[5] == 0x72) {
-//         for (int i = 0; i < NUM_FEEDBACK_LEDS; i++) {
-//           byte colorId = sysex[6 + i];
-//           uint32_t color;
-//           switch (colorId) {
-//             case 0x01: color = strip.Color(255, 0, 0); break;
-//             case 0x02: color = strip.Color(0, 255, 0); break;
-//             case 0x03: color = strip.Color(255, 255, 0); break;
-//             case 0x04: color = strip.Color(0, 0, 255); break;
-//             case 0x05: color = strip.Color(255, 0, 255); break;
-//             case 0x06: color = strip.Color(0, 255, 255); break;
-//             case 0x07: color = strip.Color(255, 255, 255); break;
-//             default:   color = strip.Color(0, 0, 0); break;
-//           }
-//           strip.setPixelColor(i, color);
-//         }
-//         strip.show();
-//       }
-//       return;
-//     }
-
-//     byte ch = usbMIDI.getChannel();
-//     byte d1 = usbMIDI.getData1();
-//     byte d2 = usbMIDI.getData2();
-
-//     if (type == 0xE) {  // Pitch Bend
-//       int pitchValue = ((d2 << 7) | d1); // 14-bit
-//       int scaled = map(pitchValue, 0, 16383, 0, 127);
-//       Serial.print("[PITCH] Raw: ");
-//       Serial.print(pitchValue);
-//       Serial.print(" → Scaled: ");
-//       Serial.println(scaled);
-//     }
-
-//     Serial.print("[MIDI IN] Type: ");
-//     switch (type) {
-//       case 0x08: Serial.print("Note Off   "); break;
-//       case 0x09: Serial.print("Note On    "); break;
-//       case 0x0A: Serial.print("Aftertouch "); break;
-//       case 0x0B: Serial.print("CC         "); break;
-//       case 0x0C: Serial.print("Program    "); break;
-//       case 0x0D: Serial.print("Channel Pressure"); break;
-//       case 0x0E: Serial.print("Pitch Bend "); break;
-//       default:   Serial.print("Other      "); break;
-//     }
-
-//     Serial.print(" Ch: "); Serial.print(ch);
-//     Serial.print(" D1: "); Serial.print(d1);
-//     Serial.print(" D2: "); Serial.println(d2);
-
-//     if (type == 0x09) {
-//       for (int i = 0; i < NUM_FEEDBACK_LEDS; i++) {
-//         if (d1 == feedbackNotes[i]) {
-//           strip.setPixelColor(i, d2 > 0 ? strip.Color(255, 255, 255) : 0);
-//           strip.show();
-//         }
-//       }
-//     }
-//   }
-//}
+//================================
+// UPLOAD Function 
+//================================
+//Upload without pressing button, using python script, takes one second try
+void checkSerialForReboot() {
+    if (Serial.available()) {
+        String cmd = Serial.readStringUntil('\n');
+        cmd.trim(); // Remove any whitespace/newlines
+        
+        if (cmd == "REBOOT_BOOTLOADER") {
+            Serial.println("[REBOOT] Command received. Entering bootloader...");
+            Serial.flush(); // Important: ensure message is sent before reboot
+            delay(100);
+            
+            // This is the correct method for ALL Teensy models
+            _reboot_Teensyduino_();
+            
+        } else if (cmd == "REBOOT_NORMAL") {
+            Serial.println("[REBOOT] Normal reboot requested...");
+            Serial.flush();
+            delay(100);
+            
+            // Normal restart using ARM AIRCR register
+            SCB_AIRCR = 0x05FA0004;
+            
+        } else {
+            Serial.print("[REBOOT] Unknown command: ");
+            Serial.println(cmd);
+        }
+    }
+}
