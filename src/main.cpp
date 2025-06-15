@@ -76,7 +76,7 @@ void loop() {
   handleButtons();
   handleIncomingMIDI();
   usbMIDI.send_now();
-  
+  checkSerialForReboot();
   
 }
 
@@ -85,12 +85,12 @@ void handleEncoders() {
     long movement = encoders[i]->readAndReset();
     encoderBuffer[i] += movement;
 
-    if (movement != 0) {
-      Serial.print("[ENC] Index ");
-      Serial.print(i);
-      Serial.print(" moved ");
-      Serial.println(movement);
-    }
+    // if (movement != 0) {
+    //   Serial.print("[ENC] Index ");
+    //   Serial.print(i);
+    //   Serial.print(" moved ");
+    //   Serial.println(movement);
+    // }
 
     while (abs(encoderBuffer[i]) >= 4) {
       int dir = (encoderBuffer[i] > 0) ? 1 : -1;
@@ -186,7 +186,7 @@ void handleIncomingMIDI() {
     byte d2 = usbMIDI.getData2();
 
     // Only process CC messages on our MIDI channel
-    if (type == 0x0B && ch == midiCh) {  // CC message
+    if (type == usbMIDI.ControlChange && ch == midiCh) {  // CC message
       // Check if this CC matches one of our encoders 5-12
       for (int i = 5; i < enc_num; i++) {
         if (d1 == custom_midi[i]) {
@@ -204,7 +204,7 @@ void handleIncomingMIDI() {
     }
 
     // Optional: Print all incoming MIDI for debugging
-    /*
+    
     Serial.print("[MIDI IN] Type: ");
     switch (type) {
       case 0x08: Serial.print("Note Off   "); break;
@@ -219,7 +219,7 @@ void handleIncomingMIDI() {
     Serial.print(" Ch: "); Serial.print(ch);
     Serial.print(" D1: "); Serial.print(d1);
     Serial.print(" D2: "); Serial.println(d2);
-    */
+    
   }
 }
 
