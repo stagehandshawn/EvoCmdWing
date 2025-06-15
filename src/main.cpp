@@ -1,3 +1,10 @@
+// Built for Teensy 4.1, way overpowered but has many pins
+// Sends MIDI for Grandma3 Encoders on first 5 CCs of channel 1 using relative velocity
+// Sends absolute CC values for next 8 encoders for 8 Xkeys, and recieves MIDI back on same CCs for storing current value
+
+// Sends notes on encoder click notes: 1-13
+// Setup Additional Midiremotes for encoder click actions, can be an off key or flash, and will be seperate from the XKey
+
 #include <Arduino.h>
 #include <MIDIUSB.h>
 #include <Encoder.h>
