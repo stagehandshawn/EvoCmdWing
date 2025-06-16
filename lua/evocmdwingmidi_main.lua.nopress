@@ -1,16 +1,11 @@
 -- EvoCmdWingMidi Lua Script
--- This lua script will poll midi remotes in grandma3 for the name XKeyRotate1-8 and XKeyPress1-8
--- XKeyRotate remotes handle fader control with MIDI feedback
--- XKeyPress remotes target the same sequences but allow manual key configuration
+-- This lua script will poll midi remotes in grandma3 for the name XKey1-8, and assign the
+-- the correct sequence to the midi input, and send midi feedback to keep encoder values matching onpc values
 
--- Add 16 midi remotes:
--- XKeyRotate1-8: channel 1 cc 6-13 (fader control with feedback)
--- XKeyPress1-8: channel 1 note 6-13 (key presses, manual configuration)
--- Example: XKeyRotate7 channel 1 cc 12, XKeyPress7 channel 1 cc 6
-
--- Midi CC 1-5 used for Midi Encoders (by Pro Plugins) for attributes
-
--- The script will update the MidiRemote Targets with the current sequences assigned to the XKeys
+-- Add 8 midi remotes name them XKey1 - XKey8
+-- assign a midi channel of 1 and control change from 6 - 13
+-- example: XKey7 channel 1 cc 12
+-- the script will auto populate the target as sequences change
 
 -- Many thanks to LenschCode for the original code from Midi Executors v1.1.0
 -- GNU GPLv3
@@ -19,6 +14,7 @@
 local rate = 0.5
 
 -- Starting CC for MIDI feedback
+-- First remote = CC 6, second = CC 7, etc. on Channel 1
 local startingCC = 6
 local midiChannel = 1
 
@@ -27,26 +23,26 @@ local currentPage = nil -- Track current page
 local lastExecutorObjects = {} -- Track what's assigned to each executor
 
 local function getXKeyMapping(remoteName)
-    -- Handle both XKeyRotate and XKeyPress remotes
-    local rotateNum = remoteName:match("^[Xx][Kk]ey[Rr]otate(%d+)$")
-    local pressNum = remoteName:match("^[Xx][Kk]ey[Pp]ress(%d+)$")
+    -- Direct hardcoded mapping: XKey1/Xkey1 = Executor 291, etc.
+    local normalizedName = remoteName:gsub("^[Xx]key(%d+)$", "XKey%1")
     
-    local executorNumber = nil
-    local remoteType = nil
+    local xkeyMappings = {
+        ["XKey1"] = 291,
+        ["XKey2"] = 292,
+        ["XKey3"] = 293,
+        ["XKey4"] = 294,
+        ["XKey5"] = 295,
+        ["XKey6"] = 296,
+        ["XKey7"] = 297,
+        ["XKey8"] = 298
+    }
     
-    if rotateNum then
-        executorNumber = 290 + tonumber(rotateNum) -- XKeyRotate1 = 291, etc.
-        remoteType = "Fader"
-    elseif pressNum then
-        executorNumber = 290 + tonumber(pressNum) -- XKeyPress1 = 291, etc.
-        remoteType = "Key"
-    end
-    
-    if executorNumber and executorNumber >= 291 and executorNumber <= 298 then
+    local executorNumber = xkeyMappings[normalizedName]
+    if executorNumber then
         return {
             page = CurrentExecPage().no,
             id = executorNumber,
-            type = remoteType
+            type = "Fader"
         }
     else
         return nil
@@ -102,37 +98,36 @@ local function sendMidiFeedback(ccNumber, value)
 end
 
 local function sendPageChangeFeedback()
-    -- Get XKeyRotate remotes for MIDI feedback (only faders get feedback)
-    local xkeyRotateRemotes = {}
+    local ccCounter = 0
+    
+    -- Get remotes that start with "XKey"
+    local xkeyRemotes = {}
     for key, remote in pairs(Root().ShowData.Remotes.MIDIRemotes:Children()) do
         local name = remote.name
-        if string.match(name:lower(), "^xkeyrotate%d+$") then
-            table.insert(xkeyRotateRemotes, remote)
+        if string.sub(name:lower(), 1, 4) == "xkey" then
+            table.insert(xkeyRemotes, remote)
         end
     end
     
-    table.sort(xkeyRotateRemotes, function(a, b) return a.name < b.name end)
-    -- Printf("=== Sending MIDI feedback for %d XKeyRotate remotes ===", #xkeyRotateRemotes)
+    table.sort(xkeyRemotes, function(a, b) return a.name < b.name end)
+    -- Printf("=== Sending MIDI feedback for %d XKey remotes ===", #xkeyRemotes)
     
-    for _, remote in pairs(xkeyRotateRemotes) do
+    for _, remote in pairs(xkeyRemotes) do
         local exec = getXKeyMapping(remote.name)
         if exec ~= nil then
-            -- Extract the number from the remote name and use it directly for CC calculation
-            local rotateNum = remote.name:match("^[Xx][Kk]ey[Rr]otate(%d+)$")
-            if rotateNum then
-                local ccNumber = startingCC + tonumber(rotateNum) - 1
-                -- Always get current value regardless of target state
-                local currentValue = getCurrentFaderValue(exec.page, exec.id)
-                
-                Printf("Sending: %s (Exec %d) -> CC %d, Value: %.1f%% (target: %s)", 
-                       remote.name, exec.id, ccNumber, currentValue, 
-                        remote.target and "assigned" or "empty")
-                sendMidiFeedback(ccNumber, currentValue)
-            end
+            ccCounter = ccCounter + 1
+            local ccNumber = startingCC + ccCounter - 1
+            -- Always get current value regardless of target state
+            local currentValue = getCurrentFaderValue(exec.page, exec.id)
+            
+            -- Printf("Sending: %s (Exec %d) -> CC %d, Value: %.1f%% (target: %s)", 
+            --        remote.name, exec.id, ccNumber, currentValue, 
+            --        remote.target and "assigned" or "empty")
+            sendMidiFeedback(ccNumber, currentValue)
         end
     end
     
-    -- Printf("=== Completed MIDI updates for %d remotes ===", #xkeyRotateRemotes)
+    -- Printf("=== Completed MIDI updates for %d remotes ===", ccCounter)
 end
 
 local function checkForExecutorChanges()
@@ -180,53 +175,36 @@ local function checkForExecutorChanges()
         -- Wait a moment for grandMA to finish processing the changes
         coroutine.yield(0.1) -- 100ms delay
         
-        -- Printf("=== Sending MIDI updates for XKeyRotate remotes ===")
+        -- Printf("=== Sending MIDI updates for all XKey remotes ===")
         sendPageChangeFeedback()
     end
 end
 
 local function parseMidiRemotes()
-    -- Process remotes that start with "XKeyRotate" or "XKeyPress"
+    -- Process remotes that start with "XKey"
     for key, remote in pairs(Root().ShowData.Remotes.MIDIRemotes:Children()) do
         local name = remote.name
-        local nameUpper = name:upper()
-        
-        if string.match(nameUpper, "^XKEYROTATE%d+$") or string.match(nameUpper, "^XKEYPRESS%d+$") then
+        if string.sub(name:lower(), 1, 4) == "xkey" then
             local exec = getXKeyMapping(remote.name)
             if exec ~= nil then
-                -- Always update the target object
                 if remote.target ~= getExecObject(exec.page, exec.id) then
                     remote.target = getExecObject(exec.page, exec.id)
                     -- Printf("Mapped %s to Executor %d", remote.name, exec.id)
                 end
-                
                 if remote.target == nil then
-                    -- No target assigned, clear fader but preserve manual key settings for XKeyPress
-                    if exec.type == "Fader" then
-                        -- XKeyRotate: clear both key and fader
-                        if remote.key ~= "" then
-                            remote.key = ""
-                        end
+                    if remote.key ~= "" then
+                        remote.key = ""
                     end
-                    -- Always clear fader for both types when no target
                     if remote.fader ~= "" then
                         remote.fader = ""
                     end
-                    -- For XKeyPress (exec.type == "Key"), we keep the manual key setting
                 else
-                    if exec.type == "Fader" then
-                        -- XKeyRotate: Handle fader control
-                        if remote.key ~= "" then
-                            remote.key = ""
-                        end
-                        if remote.fader ~= getExecFader(exec.page, exec.id) then
-                            remote.fader = getExecFader(exec.page, exec.id)
-                        end
-                    elseif exec.type == "Key" then
-                        -- XKeyPress: Only target assignment, leave key action for manual config
-                        if remote.fader ~= "" then
-                            remote.fader = ""
-                        end
+                    -- Always assign fader since XKey remotes are faders
+                    if remote.key ~= "" then
+                        remote.key = ""
+                    end
+                    if remote.fader ~= getExecFader(exec.page, exec.id) then
+                        remote.fader = getExecFader(exec.page, exec.id)
                     end
                 end
             end
@@ -267,9 +245,7 @@ function main()
         if not running then
             running = true
             Printf("Starting -- EvoCmdWingMidi...")
-            Printf("Monitoring: Executors 291-298")
-            Printf("XKeyRotate1-8: MIDI Channel %d, CC %d-%d (with feedback)", midiChannel, startingCC, startingCC + 7)
-            Printf("XKeyPress1-8: MIDI Channel %d, CC %d-%d (no feedback)", midiChannel, startingCC, startingCC + 7)
+            Printf("Monitoring: Executors 291-298, MIDI Channel %d, Starting CC %d", midiChannel, startingCC)
             loop()
         end
     elseif name == "Stop" then
