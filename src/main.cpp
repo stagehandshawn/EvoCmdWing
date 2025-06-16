@@ -1,6 +1,6 @@
 // Written by ShawnR
 // Built for Teensy 4.1, way overpowered but has many pins
-// Sends MIDI for Grandma3 Encoders on first 5 CCs of channel 1 using relative velocity
+// Sends MIDI for Grandma3 Encoders on first 5 CCs of channel 1 using relative velocity for use with Pro Plugins Midi Encoders plugin
 // Sends absolute CC values for next 8 encoders for 8 Xkeys, and recieves MIDI back on same CCs for storing current value
 
 // Sends notes on encoder click notes: 1-13

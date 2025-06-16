@@ -1,0 +1,19 @@
+// Add this to your .vscode folder to run a task that will update the teensy without having to press the upload button
+
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Git Commit with Timestamp",
+      "type": "shell",
+      "command": "git add . && git commit -m \"Auto-snapshot: $(date '+%Y-%m-%d %H:%M:%S')\" || echo 'Nothing to commit'",
+      "problemMatcher": []
+    },
+    {
+      "label": "Teensy Auto Upload",
+      "type": "shell",
+      "command": "python3 teensy_auto_upload.py",
+      "problemMatcher": []
+    }
+  ]
+}
