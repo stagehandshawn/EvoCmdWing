@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GMA3 DataVersion="1.9.3.3">
+    <KeyboardShortCuts KeyboardShortcutsActive="Yes">
+        <KeyboardShortcut Lock="Yes" KeyCode="PREV" Shortcut="Alt+P" />
+        <KeyboardShortcut Lock="Yes" KeyCode="NEXT" Shortcut="Alt+N" />
+        <KeyboardShortcut Lock="Yes" KeyCode="RESET" Shortcut="Alt+S" />
+        <KeyboardShortcut Lock="Yes" KeyCode="UP" Shortcut="Alt+U" />
+        <KeyboardShortcut Lock="Yes" KeyCode="SELFIX" Shortcut="Alt+F" />
+        <KeyboardShortcut Lock="Yes" KeyCode="DOWN" Shortcut="Alt+D" />
+        <KeyboardShortcut Lock="Yes" KeyCode="MENU" Shortcut="Alt+M" />
+        <KeyboardShortcut Lock="Yes" KeyCode="HIGHLIGHT" Shortcut="Alt+H" />
+        <KeyboardShortcut Lock="Yes" KeyCode="SOLO" Shortcut="Alt+E" />
+        <KeyboardShortcut Lock="Yes" KeyCode="FREEZE" Shortcut="Alt+B" />
+        <KeyboardShortcut Lock="Yes" KeyCode="PREVIEW" Shortcut="Alt+W" />
+        <KeyboardShortcut Lock="Yes" KeyCode="BLIND" Shortcut="Alt+V" />
+        <KeyboardShortcut Lock="Yes" KeyCode="XKEYS" Shortcut="Alt+X" />
+        <KeyboardShortcut Lock="Yes" KeyCode="PAGE_UP" Shortcut="Alt+Apostrophe" />
+        <KeyboardShortcut Lock="Yes" KeyCode="PAGE_DOWN" Shortcut="Alt+Semicolon" />
+        <KeyboardShortcut Lock="Yes" KeyCode="USER1" Shortcut="Alt+LeftBracket" />
+        <KeyboardShortcut Lock="Yes" KeyCode="USER2" Shortcut="Alt+RightBracket" />
+        <KeyboardShortcut Lock="Yes" KeyCode="LIST" Shortcut="Alt+I" />
+        <KeyboardShortcut Lock="Yes" KeyCode="X1" Shortcut="F1" />
+        <KeyboardShortcut Lock="Yes" KeyCode="X2" Shortcut="F2" />
+        <KeyboardShortcut Lock="Yes" KeyCode="X3" Shortcut="F3" />
+        <KeyboardShortcut Lock="Yes" KeyCode="X4" Shortcut="F4" />
+        <KeyboardShortcut Lock="Yes" KeyCode="X5" Shortcut="F5" />
+        <KeyboardShortcut Lock="Yes" KeyCode="X6" Shortcut="F6" />
+        <KeyboardShortcut Lock="Yes" KeyCode="X7" Shortcut="F7" />
+        <KeyboardShortcut Lock="Yes" KeyCode="X8" Shortcut="F8" />
+        <KeyboardShortcut Lock="Yes" KeyCode="X9" Shortcut="Insert" />
+        <KeyboardShortcut Lock="Yes" KeyCode="X10" Shortcut="Home" />
+        <KeyboardShortcut Lock="Yes" KeyCode="X11" Shortcut="PageUp" />
+        <KeyboardShortcut Lock="Yes" KeyCode="X12" Shortcut="F12" />
+        <KeyboardShortcut Lock="Yes" KeyCode="X13" Shortcut="Delete" />
+        <KeyboardShortcut Lock="Yes" KeyCode="X14" Shortcut="End" />
+        <KeyboardShortcut Lock="Yes" KeyCode="X15" Shortcut="PageDown" />
+        <KeyboardShortcut Lock="Yes" KeyCode="X16" Shortcut="kpAdd" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="101" Shortcut="Z" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="102" Shortcut="X" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="103" Shortcut="C" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="104" Shortcut="V" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="105" Shortcut="B" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="106" Shortcut="N" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="107" Shortcut="M" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="108" Shortcut="Comma" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="109" Shortcut="Period" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="110" Shortcut="Slash" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="111" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="112" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="113" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="114" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="115" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="201" Shortcut="A" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="202" Shortcut="S" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="203" Shortcut="D" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="204" Shortcut="F" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="205" Shortcut="G" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="206" Shortcut="H" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="207" Shortcut="J" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="208" Shortcut="K" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="209" Shortcut="L" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="210" Shortcut="Semicolon" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="211" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="212" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="213" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="214" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="215" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="301" Shortcut="Q" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="302" Shortcut="W" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="303" Shortcut="E" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="304" Shortcut="R" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="305" Shortcut="T" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="306" Shortcut="Y" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="307" Shortcut="U" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="308" Shortcut="I" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="309" Shortcut="O" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="310" Shortcut="P" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="311" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="312" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="313" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="314" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="315" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="401" Shortcut="Escape" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="402" Shortcut="Space" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="403" Shortcut="Tab" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="404" Shortcut="GraveAccent" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="405" Shortcut="Left" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="406" Shortcut="Right" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="407" Shortcut="Up" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="408" Shortcut="Down" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="409" Shortcut="Backslash" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="410" Shortcut="CapsLock" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="411" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="412" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="413" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="414" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" ExecutorIndex="415" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EXEC" SpecialExec="GrandKnob" />
+        <KeyboardShortcut Lock="Yes" KeyCode="DEF_GO" Shortcut="RightBracket" />
+        <KeyboardShortcut Lock="Yes" KeyCode="DEF_GOBACK" Shortcut="LeftBracket" />
+        <KeyboardShortcut Lock="Yes" KeyCode="DEF_PAUSE" Shortcut="kpMultiply" />
+        <KeyboardShortcut Lock="Yes" KeyCode="PAUSE" Shortcut="Alt+R" />
+        <KeyboardShortcut Lock="Yes" KeyCode="GOBACK" Shortcut="Alt+K" />
+        <KeyboardShortcut Lock="Yes" KeyCode="GO" Shortcut="Alt+Z" />
+        <KeyboardShortcut Lock="Yes" KeyCode="LEARN" Shortcut="Alt+L" />
+        <KeyboardShortcut Lock="Yes" KeyCode="GOBACKFAST" Shortcut="Alt+Comma" />
+        <KeyboardShortcut Lock="Yes" KeyCode="GOFAST" Shortcut="Alt+Period" />
+        <KeyboardShortcut Lock="Yes" KeyCode="ON" Shortcut="Ctrl+O" />
+        <KeyboardShortcut Lock="Yes" KeyCode="OFF" Shortcut="Ctrl+U" />
+        <KeyboardShortcut Lock="Yes" KeyCode="MOVE" Shortcut="Ctrl+M" />
+        <KeyboardShortcut Lock="Yes" KeyCode="COPY" Shortcut="Ctrl+C" />
+        <KeyboardShortcut Lock="Yes" KeyCode="DELETE" Shortcut="Ctrl+D" />
+        <KeyboardShortcut Lock="Yes" KeyCode="ALIGN" Shortcut="Ctrl+L" />
+        <KeyboardShortcut Lock="Yes" KeyCode="STOMP" Shortcut="Ctrl+S" />
+        <KeyboardShortcut Lock="Yes" KeyCode="HELP" Shortcut="Ctrl+H" />
+        <KeyboardShortcut Lock="Yes" KeyCode="SELECT" Shortcut="Ctrl+E" />
+        <KeyboardShortcut Lock="Yes" KeyCode="GOTO" Shortcut="Ctrl+Z" />
+        <KeyboardShortcut Lock="Yes" KeyCode="FIXTURE" Shortcut="Ctrl+F" />
+        <KeyboardShortcut Lock="Yes" KeyCode="CHANNEL" Shortcut="Ctrl+N" />
+        <KeyboardShortcut Lock="Yes" KeyCode="GROUP" Shortcut="Ctrl+G" />
+        <KeyboardShortcut Lock="Yes" KeyCode="SEQUENCE" Shortcut="Ctrl+Q" />
+        <KeyboardShortcut Lock="Yes" KeyCode="CUE" Shortcut="Ctrl+W" />
+        <KeyboardShortcut Lock="Yes" KeyCode="PRESET" Shortcut="Ctrl+P" />
+        <KeyboardShortcut Lock="Yes" KeyCode="EDIT" Shortcut="Ctrl+X" />
+        <KeyboardShortcut Lock="Yes" KeyCode="ASSIGN" Shortcut="Ctrl+A" />
+        <KeyboardShortcut Lock="Yes" KeyCode="TIME" Shortcut="Ctrl+J" />
+        <KeyboardShortcut Lock="Yes" KeyCode="UPDATE" Shortcut="Ctrl+B" />
+        <KeyboardShortcut Lock="Yes" KeyCode="STORE" Shortcut="Alt+Q" />
+        <KeyboardShortcut Lock="Yes" KeyCode="NUM0" Shortcut="0" />
+        <KeyboardShortcut Lock="Yes" KeyCode="NUM1" Shortcut="1" />
+        <KeyboardShortcut Lock="Yes" KeyCode="NUM2" Shortcut="2" />
+        <KeyboardShortcut Lock="Yes" KeyCode="NUM3" Shortcut="3" />
+        <KeyboardShortcut Lock="Yes" KeyCode="NUM4" Shortcut="4" />
+        <KeyboardShortcut Lock="Yes" KeyCode="NUM5" Shortcut="5" />
+        <KeyboardShortcut Lock="Yes" KeyCode="NUM6" Shortcut="6" />
+        <KeyboardShortcut Lock="Yes" KeyCode="NUM7" Shortcut="7" />
+        <KeyboardShortcut Lock="Yes" KeyCode="NUM8" Shortcut="8" />
+        <KeyboardShortcut Lock="Yes" KeyCode="NUM9" Shortcut="9" />
+        <KeyboardShortcut Lock="Yes" KeyCode="PLUS" Shortcut="Alt+Equal" />
+        <KeyboardShortcut Lock="Yes" KeyCode="THRU" Shortcut="Alt+T" />
+        <KeyboardShortcut Lock="Yes" KeyCode="MINUS" Shortcut="Minus" />
+        <KeyboardShortcut Lock="Yes" KeyCode="DOT" Shortcut="Ctrl+Period" />
+        <KeyboardShortcut Lock="Yes" KeyCode="IF" Shortcut="Alt+8" />
+        <KeyboardShortcut Lock="Yes" KeyCode="AT" Shortcut="Alt+2" />
+        <KeyboardShortcut Lock="Yes" KeyCode="SLASH" Shortcut="Ctrl+Slash" />
+        <KeyboardShortcut Lock="Yes" KeyCode="PLEASE" Shortcut="Enter" />
+        <KeyboardShortcut Lock="Yes" KeyCode="FULL" Shortcut="Alt+Y" />
+        <KeyboardShortcut Lock="Yes" KeyCode="OOPS" Shortcut="Alt+O" />
+        <KeyboardShortcut Lock="Yes" KeyCode="ESC" Shortcut="Alt+C" />
+        <KeyboardShortcut Lock="Yes" KeyCode="CLEAR" Shortcut="Alt+Backspace" />
+        <KeyboardShortcut Lock="Yes" KeyCode="SLASH" Shortcut="Ctrl+Slash" />
+        <KeyboardShortcut Lock="Yes" KeyCode="PLUS" Shortcut="Alt+Equal" />
+        <KeyboardShortcut Lock="Yes" KeyCode="PLEASE" Shortcut="Enter" />
+        <KeyboardShortcut Lock="Yes" KeyCode="DOT" Shortcut="kpDecimal" />
+        <KeyboardShortcut Lock="Yes" KeyCode="OOPS" Shortcut="Alt+O" />
+        <KeyboardShortcut Lock="Yes" />
+    </KeyboardShortCuts>
+</GMA3>
