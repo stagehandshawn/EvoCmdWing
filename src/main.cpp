@@ -27,7 +27,8 @@ const byte custom_midi[enc_num] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
 //first 5 for encoders, next 8 for XKeys
 const byte buttonNotes[N_BUTTONS] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
 
-//const int velocityScale[8] = {1, 1, 2, 2, 3, 3, 4, 4};  //defualt from first sketch
+// Here you can play with the velocity scaling to get the sensitivity you like
+// This works well for me with no accel in Pro Plugins Midi Encoders plugin
 const int velocityScale[8] = {1, 1, 2, 2, 3, 4, 5, 6};
 
 // Array to store current values for encoders 5-12 (absolute mode)
@@ -146,7 +147,7 @@ void sendMidiEncoder(int index, int direction) {
     if (direction > 0) {
       final_value = scaled;  // ➕ right = 1–8 (no change)
     } else {
-      final_value = 72 - (scaled - 1);  // ➖ left: 1 → 72, 2 → 71, ..., 6 → 67
+      final_value = 64 + scaled ; // left 65 and up
     }
   } else {
     // Encoders 5-12: absolute value mode (0-127)
