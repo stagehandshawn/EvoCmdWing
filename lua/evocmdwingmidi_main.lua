@@ -6,7 +6,7 @@
 -- Add 16 midi remotes:
 -- XKeyRotate1-8: channel 1 cc 6-13 (fader control with feedback)
 -- XKeyPress1-8: channel 1 note 6-13 (key presses, manual configuration)
--- Example: XKeyRotate7 channel 1 cc 12, XKeyPress7 channel 1 cc 6
+-- Example: XKeyRotate7 channel 1 cc 12, XKeyPress1 channel 1 cc 6
 
 -- Midi CC 1-5 used for Midi Encoders (by Pro Plugins) for attributes
 
