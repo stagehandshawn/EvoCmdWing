@@ -55,8 +55,11 @@
 ## Overview
  - Sends custom keys to grandMA3 onPC when paired with `/help_files/EvoCmdWingv0.2_keyboard_shortcuts.xml` you will have a nice control surface.
  - LED feedback for XKeys.  
- - 8 extra encoders for XKeys 1-8
+ - 8 extra encoders for XKeys 1-8 with added Press action. 
  - Keyboard compiled using QMK firmware.  
+ - Designed with
+   - D-Type panel mount openings for changes/additions later without reprinting (e.g., adding Art-net to DMX module, hardware midi, or LTC generator)
+   - Extra stand-offs for adding prototype boards for extra design options
 
 ## Getting started
 - [Bill Of Materials](https://github.com/stagehandshawn/EvoCmdWing/wiki/Bill-of-Materials)
@@ -92,9 +95,9 @@
  - The `/help_files` and `/images` folders have some helpful files.  
 
 ## Inspiration
- - Check out this project for a general idea, I used it as a starting point but eventually redesigned it to be closer to the layout of a console and to have more control surfaces, and feedback.
+ - Check out this project! I used it as a starting point but eventually redesigned it to be closer to the layout of a console and to have more control surfaces, and feedback.
  - https://www.thingiverse.com/thing:6464653
- - Thanks to Nathan_I3 for the inspiration for this project.
+ - Thanks to Nathan_I3 for the inspiration for this project!
 
 ## Also check out [EvoFaderWing](https://github.com/stagehandshawn/EvoFaderWing) for a complete at home programming setup.
 #### More to come. Thank you for checking out my project!
