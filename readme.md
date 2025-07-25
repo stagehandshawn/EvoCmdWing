@@ -20,7 +20,7 @@
       </blockquote>
     </td>
     <td width="30%" align="right" valign="top">
-      <img src="https://github.com/stagehandshawn/EvoCmdWing/blob/main/images/v02built/evocmdwing_top1.png" alt="cmdwing" width="350">
+      <img src="https://raw.githubusercontent.com/stagehandshawn/EvoCmdWing/main/images/v02built/evocmdwing_top1.png" alt="cmdwing" width="350">
     </td>
   </tr>
 </table>
@@ -31,18 +31,18 @@
 <table>
   <tr>
     <td width="50%">
-      <img src="https://github.com/stagehandshawn/EvoCmdWing/blob/main/images/v02built/evocmdwing_top2_right.png" alt="cmdwingtop" width="100%">
+      <img src="https://raw.githubusercontent.com/stagehandshawn/EvoCmdWing/main/images/v02built/evocmdwing_top2_right.png" alt="cmdwingtop" width="100%">
     </td>
     <td width="50%">
-      <img src="https://github.com/stagehandshawn/EvoCmdWing/blob/main/images/v02built/evocmdwing_side2.png" alt="cmdwingside" width="100%">
+      <img src="https://raw.githubusercontent.com/stagehandshawn/EvoCmdWing/main/images/v02built/evocmdwing_side2.png" alt="cmdwingside" width="100%">
     </td>
   </tr>
   <tr>
     <td width="50%">
-      <img src="https://github.com/stagehandshawn/EvoCmdWing/blob/main/images/v02built/evocmdwing_back1.png" alt="cmdwingback" width="100%">
+      <img src="https://raw.githubusercontent.com/stagehandshawn/EvoCmdWing/main/images/v02built/evocmdwing_back1.png" alt="cmdwingback" width="100%">
     </td>
     <td width="50%">
-      <img src="https://github.com/stagehandshawn/EvoCmdWing/blob/main/images/cmdwing.jpg" alt="faderwingcmdwing" width="100%">
+      <img src="https://raw.githubusercontent.com/stagehandshawn/EvoCmdWing/main/images/cmdwing.jpg" alt="faderwingcmdwing" width="100%">
     </td>
   </tr>
 </table>
@@ -55,6 +55,7 @@
 ## Overview
  - Sends custom keys to grandMA3 onPC when paired with `/help_files/EvoCmdWingv0.2_keyboard_shortcuts.xml` you will have a nice control surface.
  - LED feedback for XKeys.  
+ - 8 extra encoders for XKeys 1-8
  - Keyboard compiled using QMK firmware.  
 
 ## Getting started
@@ -77,7 +78,7 @@
   - You can create them manually with the plugin and batch change the action for pressing the encoder.  
   - You can change each one seperatly in the Midi Remtoes option as well.  
 
-![midiRemotes](https://github.com/stagehandshawn/EvoCmdWing/blob/main/help_files/XKey_MidiRemote_setup.png)
+![midiRemotes](https://raw.githubusercontent.com/stagehandshawn/EvoCmdWing/main/help_files/XKey_MidiRemote_setup.png)
 
 
 #### [Pro Plugins MidiEncoders](https://www.ma3-pro-plugins.com/midi-encoders)
