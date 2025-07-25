@@ -175,7 +175,7 @@
         <KeyboardShortcut Lock="Yes" KeyCode="PLEASE" Shortcut="Enter" />
         <KeyboardShortcut Lock="Yes" KeyCode="FULL" Shortcut="Alt+Y" />
         <KeyboardShortcut Lock="Yes" KeyCode="OOPS" Shortcut="Alt+O" />
-        <KeyboardShortcut Lock="Yes" KeyCode="ESC" Shortcut="Alt+C" />
+        <!-- <KeyboardShortcut Lock="Yes" KeyCode="ESC" Shortcut="Alt+C" /> Modified to be native ESC key-->
         <KeyboardShortcut Lock="Yes" KeyCode="CLEAR" Shortcut="Alt+Backspace" />
                 
         
