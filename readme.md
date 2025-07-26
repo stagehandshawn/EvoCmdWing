@@ -100,4 +100,5 @@
  - Thanks to Nathan_I3 for the inspiration for this project!
 
 ## Also check out [EvoFaderWing](https://github.com/stagehandshawn/EvoFaderWing) for a complete at home programming setup.
+![evocmdfaderwing](https://raw.githubusercontent.com/stagehandshawn/EvoCmdWing/main/images/v02built/faderwing_cmdwing.png)
 #### More to come. Thank you for checking out my project!
