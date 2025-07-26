@@ -42,7 +42,7 @@
       <img src="https://raw.githubusercontent.com/stagehandshawn/EvoCmdWing/main/images/v02built/evocmdwing_back1.png" alt="cmdwingback" width="100%">
     </td>
     <td width="50%">
-      <img src="https://raw.githubusercontent.com/stagehandshawn/EvoCmdWing/main/images/cmdwing.jpg" alt="faderwingcmdwing" width="100%">
+      <img src="https://raw.githubusercontent.com/stagehandshawn/EvoCmdWing/main/images/v02built/faderwing_cmdwing.png" alt="faderwingcmdwing" width="100%">
     </td>
   </tr>
 </table>
