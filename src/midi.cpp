@@ -41,7 +41,7 @@ void handleIncomingMIDI() {
         for (int i = 5; i < N_ENCODERS; i++) {
           if (d1 == midi_note[i]) {
             encoderValues[i] = constrain(d2, 0, 127);
-            debugPrintf("[MIDI IN CH1] CC Update - Encoder %d | CC: %d | Value: %d", i, d1, encoderValues[i]);
+            debugPrintf("[MIDI IN CH1] CC Update - Encoder %d | CC: %d | Value: %d", (i + 1), d1, encoderValues[i]);
             break;
           }
         }
@@ -53,19 +53,23 @@ void handleIncomingMIDI() {
         handlePageMIDI(ch, d1, d2);
       }
     }
-    
-    const char* typeStr;
-    switch (type) {
-      case 0x08: typeStr = "Note Off   "; break;
-      case 0x09: typeStr = "Note On    "; break;
-      case 0x0A: typeStr = "Aftertouch "; break;
-      case 0x0B: typeStr = "CC         "; break;
-      case 0x0C: typeStr = "Program    "; break;
-      case 0x0D: typeStr = "Channel Pressure"; break;
-      case 0x0E: typeStr = "Pitch Bend "; break;
-      default:   typeStr = "Other      "; break;
-    }
-    debugPrintf("[MIDI IN] Type: %s Ch: %d D1: %d D2: %d", typeStr, ch, d1, d2);
+
+// =====================================
+// EXTRA DEBUG NO LONGER NEEDED
+// =====================================
+  //   const char* typeStr;
+  // switch (type) {
+  //   case usbMIDI.NoteOff: typeStr = "Note Off   "; break;
+  //   case usbMIDI.NoteOn: typeStr = "Note On    "; break;
+  //   case usbMIDI.AfterTouchPoly: typeStr = "Aftertouch "; break;
+  //   case usbMIDI.ControlChange: typeStr = "CC         "; break;
+  //   case usbMIDI.ProgramChange: typeStr = "Program    "; break;
+  //   case usbMIDI.AfterTouchChannel: typeStr = "Channel Pressure"; break;
+  //   case usbMIDI.PitchBend: typeStr = "Pitch Bend "; break;
+  //   default: typeStr = "Other      "; break;
+  // }
+  //   debugPrintf("[MIDI IN] Type: %s Ch: %d D1: %d D2: %d", typeStr, ch, d1, d2);
+  
   }
   
   // Alert if we hit the message limit (indicates potential MIDI flooding)
@@ -118,7 +122,7 @@ void handlePageMIDI(byte ch, byte cc, byte value) {
       // Single LED update for entire page
       if (anyLEDChanged) {
         showStrip();
-        debugPrintf("[LED] Page %d loaded - all LEDs updated synchronously", newPage);
+        debugPrintf("[LED] Page %d loaded - all LEDs updated", newPage);
       }
       
       debugPrintf("[PAGE] Now on page %d", newPage);
@@ -263,10 +267,13 @@ void handleStatusMIDI(byte ch, byte cc, byte value) {
     hasPendingLEDUpdate = true;
     lastMidiUpdateTime = millis();
     
-    debugPrintf("[STATUS] Page %d XKey %d (Exec %d): On=%s Pop=%s RGB=(%d,%d,%d)", 
-                currentPage + 1, xkeyNumber, executorNumber,
-                status->isOn ? "ON" : "OFF",
-                status->isPopulated ? "YES" : "NO",
-                status->red, status->green, status->blue);
+    // ===================================
+    // Redundant debug output for testing
+    // ====================================
+    // debugPrintf("[STATUS] Page %d XKey %d (Exec %d): On=%s Pop=%s RGB=(%d,%d,%d)", 
+    //             currentPage + 1, xkeyNumber, executorNumber,
+    //             status->isOn ? "ON" : "OFF",
+    //             status->isPopulated ? "YES" : "NO",
+    //             status->red, status->green, status->blue);
   }
 }

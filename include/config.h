@@ -42,7 +42,11 @@ extern const byte buttonNotes[N_BUTTONS];
 
 // Here you can play with the velocity scaling to get the sensitivity you like
 // This works well for me with no accel in Pro Plugins Midi Encoders plugin
-extern const int velocityScale[8];
+extern const int velocityScales[8][8];
+
+// Encoder sensitivity variables
+extern int relativeEncoderSensitivity;  // For encoders 0-4 (relative mode)
+extern int absoluteEncoderSensitivity;   // For encoders 5-12 (absolute mode)
 
 //midi channel to send on
 extern byte midiCh;
@@ -126,9 +130,10 @@ extern int encoderBuffer[N_ENCODERS];
 extern bool midiDataPending;
 
 // ================================
-// BRIGHTNESS ADJUSTMENT MODE
+// ADJUSTMENT MODE (BRIGHTNESS & SENSITIVITY)
 // ================================
-extern bool brightnessAdjustMode;     // True when button 14 is held down
+extern bool adjustMode;               // True when button 14 is held down for brightness/sensitivity adjustment
+extern bool sensitivityMode;          // True when actively adjusting sensitivity (blocks normal LED updates)
 extern unsigned long button14HoldTime; // Time when button 14 was pressed
 
 // ================================

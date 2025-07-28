@@ -26,10 +26,23 @@ const byte buttonNotes[N_BUTTONS] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14};
 
 // Here you can play with the velocity scaling to get the sensitivity you like
 // This works well for me with no accel in Pro Plugins Midi Encoders plugin
-const int velocityScale[8] = {1, 1, 2, 2, 3, 4, 5, 6};
+const int velocityScales[8][8] = {
+  {1, 1, 1, 1, 1, 1, 2, 2},    // Level 1: Very slow (added variation)
+  {1, 1, 1, 1, 1, 2, 2, 3},    // Level 2: Slow
+  {1, 1, 1, 1, 2, 2, 3, 3},    // Level 3: Somewhat slow
+  {1, 1, 1, 2, 2, 3, 4, 4},    // Level 4: Slightly slow
+  {1, 1, 2, 2, 3, 4, 5, 6},    // Level 5: Current (your existing scale)
+  {1, 2, 3, 4, 5, 6, 7, 8},    // Level 6: Slightly fast
+  {2, 3, 4, 5, 6, 8, 10, 12},  // Level 7: Fast
+  {3, 4, 6, 8, 10, 12, 15, 18} // Level 8: Very fast
+};
 
 // Array to store current values for encoders 5-12 (absolute mode)
 int encoderValues[N_ENCODERS] = {0}; // Initialize all to 0
+
+// Encoder sensitivity variables
+int relativeEncoderSensitivity = 5;  // Default level 5 for relative encoders
+int absoluteEncoderSensitivity = 5;   // Default level 5 for absolute encoders
 
 // Midi channel to send on
 byte midiCh = 1;
@@ -47,8 +60,9 @@ int encoderBuffer[N_ENCODERS] = {0};
 bool midiDataPending = false;
 
 
-// Brightness adjustment mode
-bool brightnessAdjustMode = false;     // True when button 14 is held down
+// Adjustment mode (brightness & sensitivity)
+bool adjustMode = false;              // True when button 14 is held down for brightness/sensitivity adjustment
+bool sensitivityMode = false;         // True when actively adjusting sensitivity (blocks normal LED updates)
 unsigned long button14HoldTime = 0;   // Time when button 14 was pressed
 
 // ================================
@@ -107,18 +121,20 @@ void handleButtons() {
         if (i == 13) {
           if (reading == LOW) {
             // Button 14 pressed down
-            if (!brightnessAdjustMode) {
-              // Start tracking hold time for brightness mode
+            if (!adjustMode) {
+              // Start tracking hold time for adjustment mode
               button14HoldTime = millis();
-              brightnessAdjustMode = true;
-              debugPrint("[BRIGHTNESS] Button 14 held - brightness adjust mode ON");
+              adjustMode = true;
+              debugPrint("[ADJUST] Button 14 held - adjustment mode ON");
             }
             velocity = -1; // Don't send MIDI while held
           } else {
             // Button 14 released
-            if (brightnessAdjustMode) {
+            if (adjustMode) {
               unsigned long holdDuration = millis() - button14HoldTime;
-              brightnessAdjustMode = false;
+              adjustMode = false;
+              sensitivityMode = false;
+              updateXKeyLEDs();
               
               // Only toggle latch if it was a quick press (less than 500ms)
               if (holdDuration < 500) {
@@ -131,7 +147,7 @@ void handleButtons() {
                            latchButtonState ? "ON" : "OFF");
               } else {
                 velocity = -1; // Don't send MIDI for long press release
-                debugPrintf("[BRIGHTNESS] Button 14 released after %lu ms - brightness adjust mode OFF", holdDuration);
+                debugPrintf("[ADJUST] Button 14 released after %lu ms - adjustment mode OFF", holdDuration);
               }
             } else {
               velocity = -1;
@@ -159,16 +175,43 @@ void handleButtons() {
 void sendMidiEncoder(int index, int direction) {
   unsigned long now = millis();
   unsigned long elapsed = now - lastMoveTime[index];
+  if (elapsed < 5) return;  // Skip if less than 5ms since last move, keep from dumping buffer all at once issue we sometimes have got
   lastMoveTime[index] = now;
 
-  // Special handling for encoders 11, 12 and 13 when button 14 is held (brightness adjustment)
-  if ((index == 10 || index == 11 || index == 12) && brightnessAdjustMode) { // Encoder 12 (index 11) and 13 (index 12)
+  // Special handling for encoders 5, 6, 11, 12 and 13 when button 14 is held (brightness/sensitivity adjustment)
+  if ((index == 4 || index == 5 || index == 10 || index == 11 || index == 12) && adjustMode) {
     // Calculate step size using same velocity scaling as normal encoders
     int level = constrain((int)(elapsed / 15), 0, 7);
-    float step = velocityScale[7 - level] * 0.01f;  // Convert to 0.01 increments (1% steps)
+    int baseStep = velocityScales[4][7 - level]; // Use level 5 scale for consistent adjustment speed
     
-    if (index == 10) {
+    if (index == 4) {
+      // Encoder 5 controls relativeEncoderSensitivity
+      sensitivityMode = true;  // Block normal LED updates
+      int step = (baseStep > 3) ? 1 : 1; // Always step by 1 for sensitivity settings
+      if (direction > 0) {
+        relativeEncoderSensitivity = constrain(relativeEncoderSensitivity + step, 1, 8);
+      } else {
+        relativeEncoderSensitivity = constrain(relativeEncoderSensitivity - step, 1, 8);
+      }
+      updateRelativeSensitivityLEDs();
+      debugPrintf("[RELATIVE SENSITIVITY] Encoder 5 → Level: %d", relativeEncoderSensitivity);
+      
+    } else if (index == 5) {
+      // Encoder 6 controls absoluteEncoderSensitivity  
+      sensitivityMode = true;  // Block normal LED updates
+      int step = (baseStep > 3) ? 1 : 1; // Always step by 1 for sensitivity settings
+      if (direction > 0) {
+        absoluteEncoderSensitivity = constrain(absoluteEncoderSensitivity + step, 1, 8);
+      } else {
+        absoluteEncoderSensitivity = constrain(absoluteEncoderSensitivity - step, 1, 8);
+      }
+      updateAbsoluteSensitivityLEDs();
+      debugPrintf("[ABSOLUTE SENSITIVITY] Encoder 6 → Level: %d", absoluteEncoderSensitivity);
+      
+    } else if (index == 10) {
       // Encoder 11 controls logoBrightness
+      sensitivityMode = false;  // Allow normal LED updates for brightness adjustment
+      float step = baseStep * 0.01f;  // Convert to 0.01 increments (1% steps)
       if (direction > 0) {
         logoBrightness = constrain(logoBrightness + step, 0.0f, 1.0f);
       } else {
@@ -176,10 +219,12 @@ void sendMidiEncoder(int index, int direction) {
       }
       setLogoPixels(127, 64, 0, logoBrightness);
       debugPrintf("[BRIGHTNESS] Encoder 11 → Dir: %s | Logo brightness: %.2f | Step: %.2f", 
-                 direction > 0 ? "+" : "-", offBrightness, step);
+                 direction > 0 ? "+" : "-", logoBrightness, step);
 
-      } else if (index == 11) {
+    } else if (index == 11) {
       // Encoder 12 controls offBrightness (populated but off state)
+      sensitivityMode = false;  // Allow normal LED updates for brightness adjustment
+      float step = baseStep * 0.01f;  // Convert to 0.01 increments (1% steps)
       if (direction > 0) {
         offBrightness = constrain(offBrightness + step, 0.0f, 1.0f);
       } else {
@@ -191,6 +236,8 @@ void sendMidiEncoder(int index, int direction) {
 
     } else if (index == 12) {
       // Encoder 13 controls onBrightness (populated and on state)
+      sensitivityMode = false;  // Allow normal LED updates for brightness adjustment
+      float step = baseStep * 0.01f;  // Convert to 0.01 increments (1% steps)
       if (direction > 0) {
         onBrightness = constrain(onBrightness + step, 0.0f, 1.0f);
       } else {
@@ -201,16 +248,26 @@ void sendMidiEncoder(int index, int direction) {
                  direction > 0 ? "+" : "-", onBrightness, step);
     }
     
-    // Don't send MIDI in brightness mode
+    // Don't send MIDI in adjustment mode
     return;
   }
 
   int final_value;
 
+  // Get the appropriate velocity scale for current encoder type
+  const int* currentScale;
+  if (index < 5) {
+    // Relative encoders (0-4): use relative sensitivity
+    currentScale = velocityScales[relativeEncoderSensitivity - 1];
+  } else {
+    // Absolute encoders (5-12): use absolute sensitivity  
+    currentScale = velocityScales[absoluteEncoderSensitivity - 1];
+  }
+
   if (index < 5) {
     // First 5 encoders: velocity-based mode for plugin
     int level = constrain((int)(elapsed / 15), 0, 7);
-    int scaled = velocityScale[7 - level];  // fast = high index = smaller scaled value
+    int scaled = currentScale[7 - level];  // fast = high index = smaller scaled value
 
     if (direction > 0) {
       final_value = scaled;  // ➕ right = 1–8
@@ -220,7 +277,7 @@ void sendMidiEncoder(int index, int direction) {
   } else {
     // Encoders 5-12: absolute value mode (0-127)
     int level = constrain((int)(elapsed / 15), 0, 7);
-    int step = velocityScale[7 - level];  // Use same velocity scaling for step size
+    int step = currentScale[7 - level];  // Use sensitivity-specific velocity scaling for step size
     
     if (direction > 0) {
       encoderValues[index] = constrain(encoderValues[index] + step, 0, 127);

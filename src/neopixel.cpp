@@ -170,6 +170,11 @@ void updateXKeyLEDs() {
   static unsigned long lastUpdate = 0;
   unsigned long now = millis();
   
+  // Don't update XKey LEDs when in sensitivity mode (allow brightness adjustments to show)
+  if (sensitivityMode) {
+    return;
+  }
+  
   // Wait enough time to get all 3 values rgb, for cleaner color changes
   if (now - lastUpdate < 50) {
     return;
@@ -378,4 +383,40 @@ void xkeyFadeSequenceBounce(unsigned long STAGGER_DELAY, unsigned long COLOR_CYC
   }
   strip.show();
 
+}
+
+// ================================
+// SENSITIVITY LED FEEDBACK FUNCTIONS
+// ================================
+
+void updateRelativeSensitivityLEDs() {
+  // Show both relative and absolute sensitivity simultaneously
+  updateBothSensitivityLEDs();
+}
+
+void updateAbsoluteSensitivityLEDs() {
+  // Show both relative and absolute sensitivity simultaneously  
+  updateBothSensitivityLEDs();
+}
+
+void updateBothSensitivityLEDs() {
+  // Show relative sensitivity on XKeys 1-8 (green)
+  for (int i = 0; i < 8; i++) {
+    if (i < relativeEncoderSensitivity) {
+      setXKeyLED(i, 0, 127, 0, onBrightness);      // Green for active levels
+    } else {
+      setXKeyLED(i, 0, 0, 0, 0.0);                 // Off for inactive levels
+    }
+  }
+  
+  // Show absolute sensitivity on XKeys 9-16 (blue)
+  for (int i = 8; i < 16; i++) {
+    if ((i - 8) < absoluteEncoderSensitivity) {
+      setXKeyLED(i, 0, 0, 127, onBrightness);      // Blue for active levels
+    } else {
+      setXKeyLED(i, 0, 0, 0, 0.0);                 // Off for inactive levels
+    }
+  }
+  
+  showStrip();
 }
