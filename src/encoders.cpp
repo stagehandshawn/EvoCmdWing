@@ -41,7 +41,7 @@ unsigned long lastMoveTime[N_ENCODERS] = {0};
 int buttonPState[N_BUTTONS] = {};
 bool latchButtonState = false;
 unsigned long lastDebounceTime[N_BUTTONS] = {0};
-unsigned long debounceDelay = 50;
+unsigned long debounceDelay = 50;  // debounce for encoder buttons
 
 int encoderBuffer[N_ENCODERS] = {0};
 bool midiDataPending = false;
@@ -161,33 +161,45 @@ void sendMidiEncoder(int index, int direction) {
   unsigned long elapsed = now - lastMoveTime[index];
   lastMoveTime[index] = now;
 
-  // Special handling for encoders 12 and 13 when button 14 is held (brightness adjustment)
-  if ((index == 11 || index == 12) && brightnessAdjustMode) { // Encoder 12 (index 11) and 13 (index 12)
+  // Special handling for encoders 11, 12 and 13 when button 14 is held (brightness adjustment)
+  if ((index == 10 || index == 11 || index == 12) && brightnessAdjustMode) { // Encoder 12 (index 11) and 13 (index 12)
     // Calculate step size using same velocity scaling as normal encoders
     int level = constrain((int)(elapsed / 15), 0, 7);
     float step = velocityScale[7 - level] * 0.01f;  // Convert to 0.01 increments (1% steps)
     
-    if (index == 11) {
+    if (index == 10) {
+      // Encoder 11 controls logoBrightness
+      if (direction > 0) {
+        logoBrightness = constrain(logoBrightness + step, 0.0f, 1.0f);
+      } else {
+        logoBrightness = constrain(logoBrightness - step, 0.0f, 1.0f);
+      }
+      setLogoPixels(127, 64, 0, logoBrightness);
+      debugPrintf("[BRIGHTNESS] Encoder 11 → Dir: %s | Logo brightness: %.2f | Step: %.2f", 
+                 direction > 0 ? "+" : "-", offBrightness, step);
+
+      } else if (index == 11) {
       // Encoder 12 controls offBrightness (populated but off state)
       if (direction > 0) {
         offBrightness = constrain(offBrightness + step, 0.0f, 1.0f);
       } else {
         offBrightness = constrain(offBrightness - step, 0.0f, 1.0f);
       }
+      updateXKeyLEDs();
       debugPrintf("[BRIGHTNESS] Encoder 12 → Dir: %s | Off brightness: %.2f | Step: %.2f", 
                  direction > 0 ? "+" : "-", offBrightness, step);
-    } else {
+
+    } else if (index == 12) {
       // Encoder 13 controls onBrightness (populated and on state)
       if (direction > 0) {
         onBrightness = constrain(onBrightness + step, 0.0f, 1.0f);
       } else {
         onBrightness = constrain(onBrightness - step, 0.0f, 1.0f);
       }
+      updateXKeyLEDs();
       debugPrintf("[BRIGHTNESS] Encoder 13 → Dir: %s | On brightness: %.2f | Step: %.2f", 
                  direction > 0 ? "+" : "-", onBrightness, step);
     }
-    
-    updateXKeyLEDs();
     
     // Don't send MIDI in brightness mode
     return;

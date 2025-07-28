@@ -12,12 +12,14 @@ teensy_cli = os.path.expanduser("~/.platformio/packages/tool-teensy/teensy_loade
 # ------------------ CHECK HEX ------------------
 if not os.path.exists(hex_file):
     print(f"[ERROR] Firmware not found at {hex_file}")
+    print("[REMINDER] If upload fails, make sure to close any open serial monitors first")
     sys.exit(1)
 
 # ------------------ CHECK CLI ------------------
 if not os.path.exists(teensy_cli):
     print(f"[ERROR] teensy_loader_cli not found at {teensy_cli}")
     print("[ERROR] Make sure Teensy platform is installed in PlatformIO")
+    print("[REMINDER] If upload fails, make sure to close any open serial monitors first")
     sys.exit(1)
 
 # ------------------ TEENSY IDENTIFICATION ------------------
@@ -86,7 +88,7 @@ def identify_teensys():
         print("[SCAN] No potential Teensy ports found!")
         return teensys
     
-    print("[SCAN] Scanning for connected Teensys...")
+    print("[SCAN] Scanning for connected Teensys !! PLEASE CLOSE SERIAL MONITOR !!")
     
     for port in ports:
         print(f"[SCAN] Checking {port}...", end=" ")
@@ -117,6 +119,7 @@ def select_teensy(teensys):
     if len(teensys) == 0:
         print("\n[ERROR] No Teensys found!")
         print("[ERROR] Make sure your Teensy is connected and running compatible firmware")
+        print("[REMINDER] If upload fails, make sure to close any open serial monitors first")
         return None
     elif len(teensys) == 1:
         port, name = teensys[0]
@@ -142,6 +145,7 @@ def select_teensy(teensys):
                 print("[ERROR] Please enter a valid number")
             except KeyboardInterrupt:
                 print("\n[CANCEL] Upload cancelled by user")
+                print("[REMINDER] If upload fails, make sure to close any open serial monitors first")
                 sys.exit(0)
 
 def send_reboot_command(port, device_name):
@@ -186,6 +190,7 @@ def send_reboot_command(port, device_name):
     except Exception as e:
         print(f"[REBOOT] Failed to send reboot command to {device_name}: {e}")
         print("[REBOOT] ⚠ Proceeding with upload anyway...")
+        print("[REMINDER] If upload fails, make sure to close any open serial monitors first")
         return False
 
 # ------------------ MAIN EXECUTION ------------------
@@ -241,15 +246,18 @@ for attempt in range(2):  # Try up to 2 times
                     print(f"[UPLOAD] Error: {result.stderr.strip()}")
                 if result.stdout.strip():
                     print(f"[UPLOAD] Output: {result.stdout.strip()}")
+                print("[REMINDER] If upload fails, make sure to close any open serial monitors first")
                 sys.exit(1)
         
     except subprocess.TimeoutExpired:
         print(f"[UPLOAD] ✗ Attempt {attempt + 1} timed out")
         if attempt == 1:  # Last attempt
+            print("[REMINDER] If upload fails, make sure to close any open serial monitors first")
             sys.exit(1)
     except Exception as e:
         print(f"[UPLOAD] ✗ Attempt {attempt + 1} failed with exception: {e}")
         if attempt == 1:  # Last attempt
+            print("[REMINDER] If upload fails, make sure to close any open serial monitors first")
             sys.exit(1)
 
 print(f"[SUCCESS] Firmware uploaded successfully to {selected_name}!")

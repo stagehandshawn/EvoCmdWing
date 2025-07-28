@@ -34,6 +34,7 @@ XKeyLEDMapping xkeyLEDMap[NUM_XKEYS] = {
 // Default brightness controls (0.0 to 1.0)
 float onBrightness = 1.0;        // Brightness for populated and on XKeys
 float offBrightness = 0.05;      // Brightness for populated but off XKeys
+float logoBrightness = 1.0;
 
 // LED Update Debounce System
 unsigned long lastMidiUpdateTime = 0;
@@ -54,9 +55,6 @@ void initializeLEDs() {
   clearAllLEDs();
   strip.show();
   
-  onBrightness = 1.0;
-  offBrightness = 0.05;
-
   debugPrintf("[LED] Initialized %d pixel strip on pin %d", TOTAL_PIXELS, LED_PIN);
 }
 

@@ -20,6 +20,8 @@
 
 void setup() {
   Serial.begin(115200);
+  if (debugMode) delay(200);
+
   debugPrint("EvoCmdWing setup");
 
   initializeEncoders();
@@ -27,7 +29,7 @@ void setup() {
   
   xkeyFadeSequenceBounce(50, 1000, 2, 0);  
 
-  setLogoPixels(127, 64, 0, 1.0); // orange
+  setLogoPixels(127, 64, 0, logoBrightness); // orange
 
   debugPrint("Setup complete");
 }

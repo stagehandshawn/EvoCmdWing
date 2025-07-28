@@ -70,6 +70,7 @@ extern XKeyLEDMapping xkeyLEDMap[NUM_XKEYS];
 // Independent brightness controls (0.0 to 1.0)
 extern float onBrightness;        // Brightness for populated and on XKeys
 extern float offBrightness;       // Brightness for populated but off XKeys
+extern float logoBrightness;
 
 // ================================
 // LED UPDATE DEBOUNCE SYSTEM
