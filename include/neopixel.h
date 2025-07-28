@@ -21,8 +21,7 @@ void setLogoPixels(uint8_t red, uint8_t green, uint8_t blue, float brightness);
 void clearAllLEDs();
 void xkeyFadeSequenceBounce(unsigned long STAGGER_DELAY, unsigned long COLOR_CYCLE_TIME, int cycles, int bounces);
 void showStrip();
-void updateRelativeSensitivityLEDs();
-void updateAbsoluteSensitivityLEDs();
-void updateBothSensitivityLEDs();
+
+void updateSensitivityLEDs();
 
 #endif // NEOPIXEL_H

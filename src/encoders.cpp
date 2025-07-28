@@ -31,7 +31,7 @@ const int velocityScales[8][8] = {
   {1, 1, 1, 1, 1, 2, 2, 3},    // Level 2: Slow
   {1, 1, 1, 1, 2, 2, 3, 3},    // Level 3: Somewhat slow
   {1, 1, 1, 2, 2, 3, 4, 4},    // Level 4: Slightly slow
-  {1, 1, 2, 2, 3, 4, 5, 6},    // Level 5: Current (your existing scale)
+  {1, 1, 2, 2, 3, 4, 5, 6},    // Level 5: Current default (good starting point)
   {1, 2, 3, 4, 5, 6, 7, 8},    // Level 6: Slightly fast
   {2, 3, 4, 5, 6, 8, 10, 12},  // Level 7: Fast
   {3, 4, 6, 8, 10, 12, 15, 18} // Level 8: Very fast
@@ -40,9 +40,7 @@ const int velocityScales[8][8] = {
 // Array to store current values for encoders 5-12 (absolute mode)
 int encoderValues[N_ENCODERS] = {0}; // Initialize all to 0
 
-// Encoder sensitivity variables
-int relativeEncoderSensitivity = 5;  // Default level 5 for relative encoders
-int absoluteEncoderSensitivity = 5;   // Default level 5 for absolute encoders
+// Note: Encoder sensitivity variables moved to config struct in eeprom.h
 
 // Midi channel to send on
 byte midiCh = 1;
@@ -61,9 +59,11 @@ bool midiDataPending = false;
 
 
 // Adjustment mode (brightness & sensitivity)
-bool adjustMode = false;              // True when button 14 is held down for brightness/sensitivity adjustment
-bool sensitivityMode = false;         // True when actively adjusting sensitivity (blocks normal LED updates)
-unsigned long button14HoldTime = 0;   // Time when button 14 was pressed
+bool adjustMode = false;                  // True when button 14 is held down for brightness/sensitivity adjustment
+bool sensitivityMode = false;             // True when actively adjusting sensitivity (blocks normal LED updates)
+unsigned long encoderFlipHoldTime = 0;       // Time when button 14 was pressed
+
+const int encoderFlipHoldDuration = 500;   // Time is ms to determin a hold and not a press
 
 // ================================
 // ENCODER AND BUTTON FUNCTIONS
@@ -93,18 +93,12 @@ void handleEncoders() {
     long movement = encoders[i]->readAndReset();
     encoderBuffer[i] += movement;
 
-    // if (movement != 0) {
-    //   Serial.print("[ENC] Index ");
-    //   Serial.print(i);
-    //   Serial.print(" moved ");
-    //   Serial.println(movement);
-    // }
-
     while (abs(encoderBuffer[i]) >= 4) {
       int dir = (encoderBuffer[i] > 0) ? 1 : -1;
       sendMidiEncoder(i, dir);
       encoderBuffer[i] -= (4 * dir);
     }
+
   }
 }
 
@@ -112,6 +106,7 @@ void handleEncoders() {
 void handleButtons() {
   for (int i = 0; i < N_BUTTONS; i++) {
     int reading = digitalRead(BUTTON_PIN[i]);
+
     if ((millis() - lastDebounceTime[i]) > debounceDelay) {
       if (reading != buttonPState[i]) {
         lastDebounceTime[i] = millis();
@@ -123,7 +118,7 @@ void handleButtons() {
             // Button 14 pressed down
             if (!adjustMode) {
               // Start tracking hold time for adjustment mode
-              button14HoldTime = millis();
+              encoderFlipHoldTime = millis();
               adjustMode = true;
               debugPrint("[ADJUST] Button 14 held - adjustment mode ON");
             }
@@ -131,13 +126,14 @@ void handleButtons() {
           } else {
             // Button 14 released
             if (adjustMode) {
-              unsigned long holdDuration = millis() - button14HoldTime;
+              unsigned long holdDuration = millis() - encoderFlipHoldTime;
               adjustMode = false;
               sensitivityMode = false;
+              saveConfig();
               updateXKeyLEDs();
               
               // Only toggle latch if it was a quick press (less than 500ms)
-              if (holdDuration < 500) {
+              if (holdDuration < encoderFlipHoldDuration) {
                 latchButtonState = !latchButtonState;
                 velocity = latchButtonState ? 127 : 0;
                 digitalWrite(LATCH_LED_PIN, latchButtonState ? HIGH : LOW);
@@ -189,63 +185,63 @@ void sendMidiEncoder(int index, int direction) {
       sensitivityMode = true;  // Block normal LED updates
       int step = (baseStep > 3) ? 1 : 1; // Always step by 1 for sensitivity settings
       if (direction > 0) {
-        relativeEncoderSensitivity = constrain(relativeEncoderSensitivity + step, 1, 8);
+        config.relativeEncoderSensitivity = constrain(config.relativeEncoderSensitivity + step, 1, 8);
       } else {
-        relativeEncoderSensitivity = constrain(relativeEncoderSensitivity - step, 1, 8);
+        config.relativeEncoderSensitivity = constrain(config.relativeEncoderSensitivity - step, 1, 8);
       }
-      updateRelativeSensitivityLEDs();
-      debugPrintf("[RELATIVE SENSITIVITY] Encoder 5 → Level: %d", relativeEncoderSensitivity);
+      updateSensitivityLEDs();
+      debugPrintf("[RELATIVE SENSITIVITY] Encoder 5 → Level: %d", config.relativeEncoderSensitivity);
       
     } else if (index == 5) {
       // Encoder 6 controls absoluteEncoderSensitivity  
       sensitivityMode = true;  // Block normal LED updates
       int step = (baseStep > 3) ? 1 : 1; // Always step by 1 for sensitivity settings
       if (direction > 0) {
-        absoluteEncoderSensitivity = constrain(absoluteEncoderSensitivity + step, 1, 8);
+        config.absoluteEncoderSensitivity = constrain(config.absoluteEncoderSensitivity + step, 1, 8);
       } else {
-        absoluteEncoderSensitivity = constrain(absoluteEncoderSensitivity - step, 1, 8);
+        config.absoluteEncoderSensitivity = constrain(config.absoluteEncoderSensitivity - step, 1, 8);
       }
-      updateAbsoluteSensitivityLEDs();
-      debugPrintf("[ABSOLUTE SENSITIVITY] Encoder 6 → Level: %d", absoluteEncoderSensitivity);
+      updateSensitivityLEDs();
+      debugPrintf("[ABSOLUTE SENSITIVITY] Encoder 6 → Level: %d", config.absoluteEncoderSensitivity);
       
     } else if (index == 10) {
       // Encoder 11 controls logoBrightness
       sensitivityMode = false;  // Allow normal LED updates for brightness adjustment
       float step = baseStep * 0.01f;  // Convert to 0.01 increments (1% steps)
       if (direction > 0) {
-        logoBrightness = constrain(logoBrightness + step, 0.0f, 1.0f);
+        config.logoBrightness = constrain(config.logoBrightness + step, 0.0f, 1.0f);
       } else {
-        logoBrightness = constrain(logoBrightness - step, 0.0f, 1.0f);
+        config.logoBrightness = constrain(config.logoBrightness - step, 0.0f, 1.0f);
       }
-      setLogoPixels(127, 64, 0, logoBrightness);
+      setLogoPixels(127, 64, 0, config.logoBrightness);
       debugPrintf("[BRIGHTNESS] Encoder 11 → Dir: %s | Logo brightness: %.2f | Step: %.2f", 
-                 direction > 0 ? "+" : "-", logoBrightness, step);
+                 direction > 0 ? "+" : "-", config.logoBrightness, step);
 
     } else if (index == 11) {
       // Encoder 12 controls offBrightness (populated but off state)
       sensitivityMode = false;  // Allow normal LED updates for brightness adjustment
       float step = baseStep * 0.01f;  // Convert to 0.01 increments (1% steps)
       if (direction > 0) {
-        offBrightness = constrain(offBrightness + step, 0.0f, 1.0f);
+        config.offBrightness = constrain(config.offBrightness + step, 0.0f, 1.0f);
       } else {
-        offBrightness = constrain(offBrightness - step, 0.0f, 1.0f);
+        config.offBrightness = constrain(config.offBrightness - step, 0.0f, 1.0f);
       }
       updateXKeyLEDs();
       debugPrintf("[BRIGHTNESS] Encoder 12 → Dir: %s | Off brightness: %.2f | Step: %.2f", 
-                 direction > 0 ? "+" : "-", offBrightness, step);
+                 direction > 0 ? "+" : "-", config.offBrightness, step);
 
     } else if (index == 12) {
       // Encoder 13 controls onBrightness (populated and on state)
       sensitivityMode = false;  // Allow normal LED updates for brightness adjustment
       float step = baseStep * 0.01f;  // Convert to 0.01 increments (1% steps)
       if (direction > 0) {
-        onBrightness = constrain(onBrightness + step, 0.0f, 1.0f);
+        config.onBrightness = constrain(config.onBrightness + step, 0.0f, 1.0f);
       } else {
-        onBrightness = constrain(onBrightness - step, 0.0f, 1.0f);
+        config.onBrightness = constrain(config.onBrightness - step, 0.0f, 1.0f);
       }
       updateXKeyLEDs();
       debugPrintf("[BRIGHTNESS] Encoder 13 → Dir: %s | On brightness: %.2f | Step: %.2f", 
-                 direction > 0 ? "+" : "-", onBrightness, step);
+                 direction > 0 ? "+" : "-", config.onBrightness, step);
     }
     
     // Don't send MIDI in adjustment mode
@@ -258,10 +254,10 @@ void sendMidiEncoder(int index, int direction) {
   const int* currentScale;
   if (index < 5) {
     // Relative encoders (0-4): use relative sensitivity
-    currentScale = velocityScales[relativeEncoderSensitivity - 1];
+    currentScale = velocityScales[config.relativeEncoderSensitivity - 1];
   } else {
     // Absolute encoders (5-12): use absolute sensitivity  
-    currentScale = velocityScales[absoluteEncoderSensitivity - 1];
+    currentScale = velocityScales[config.absoluteEncoderSensitivity - 1];
   }
 
   if (index < 5) {

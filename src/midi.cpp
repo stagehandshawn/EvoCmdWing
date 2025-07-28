@@ -110,11 +110,11 @@ void handlePageMIDI(byte ch, byte cc, byte value) {
           anyLEDChanged = true;
         } else if (status->isPopulated && !status->isOn) {
           // Key populated but not on
-          setXKeyLED(i, status->red, status->green, status->blue, offBrightness);
+          setXKeyLED(i, status->red, status->green, status->blue, config.offBrightness);
           anyLEDChanged = true;
         } else if (status->isPopulated && status->isOn) {
           // Key populated and on
-          setXKeyLED(i, status->red, status->green, status->blue, onBrightness);
+          setXKeyLED(i, status->red, status->green, status->blue, config.onBrightness);
           anyLEDChanged = true;
         }
       }
@@ -255,10 +255,10 @@ void handleStatusMIDI(byte ch, byte cc, byte value) {
       setXKeyLED(xkeyIndex, 0, 0, 0, 0.0);
     } else if (status->isPopulated && !status->isOn) {
       // Key populated but not on - 5% brightness
-      setXKeyLED(xkeyIndex, status->red, status->green, status->blue, offBrightness);
+      setXKeyLED(xkeyIndex, status->red, status->green, status->blue, config.offBrightness);
     } else if (status->isPopulated && status->isOn) {
       // Key populated and on - full brightness
-      setXKeyLED(xkeyIndex, status->red, status->green, status->blue, onBrightness);
+      setXKeyLED(xkeyIndex, status->red, status->green, status->blue, config.onBrightness);
     }
     
     // Mark that we have pending LED updates

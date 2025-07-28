@@ -24,12 +24,13 @@ void setup() {
 
   debugPrint("EvoCmdWing setup");
 
+  initializeEEPROM();
   initializeEncoders();
   initializeLEDs();
   
   xkeyFadeSequenceBounce(50, 1000, 2, 0);  
 
-  setLogoPixels(127, 64, 0, logoBrightness); // orange
+  setLogoPixels(127, 64, 0, config.logoBrightness); // orange
 
   debugPrint("Setup complete");
 }

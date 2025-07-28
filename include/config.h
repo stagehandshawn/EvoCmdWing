@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <Adafruit_NeoPixel.h>
 #include <Encoder.h>
+#include "eepromStorage.h"
 
 typedef unsigned char byte;
 
@@ -44,9 +45,7 @@ extern const byte buttonNotes[N_BUTTONS];
 // This works well for me with no accel in Pro Plugins Midi Encoders plugin
 extern const int velocityScales[8][8];
 
-// Encoder sensitivity variables
-extern int relativeEncoderSensitivity;  // For encoders 0-4 (relative mode)
-extern int absoluteEncoderSensitivity;   // For encoders 5-12 (absolute mode)
+// Note: Encoder sensitivity variables are now in the config struct (eeprom.h)
 
 //midi channel to send on
 extern byte midiCh;
@@ -71,10 +70,7 @@ struct XKeyLEDMapping {
 // Default LED mapping - can be manually adjusted if physical layout differs
 extern XKeyLEDMapping xkeyLEDMap[NUM_XKEYS];
 
-// Independent brightness controls (0.0 to 1.0)
-extern float onBrightness;        // Brightness for populated and on XKeys
-extern float offBrightness;       // Brightness for populated but off XKeys
-extern float logoBrightness;
+// Note: Brightness controls are now in the config struct (eeprom.h)
 
 // ================================
 // LED UPDATE DEBOUNCE SYSTEM
@@ -134,7 +130,6 @@ extern bool midiDataPending;
 // ================================
 extern bool adjustMode;               // True when button 14 is held down for brightness/sensitivity adjustment
 extern bool sensitivityMode;          // True when actively adjusting sensitivity (blocks normal LED updates)
-extern unsigned long button14HoldTime; // Time when button 14 was pressed
 
 // ================================
 // MIDI CONSTANTS

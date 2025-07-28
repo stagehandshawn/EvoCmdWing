@@ -31,10 +31,7 @@ XKeyLEDMapping xkeyLEDMap[NUM_XKEYS] = {
   {54, 55}    // XKey 16
 };
 
-// Default brightness controls (0.0 to 1.0)
-float onBrightness = 1.0;        // Brightness for populated and on XKeys
-float offBrightness = 0.05;      // Brightness for populated but off XKeys
-float logoBrightness = 1.0;
+// Note: Brightness controls moved to config struct in eeprom.h
 
 // LED Update Debounce System
 unsigned long lastMidiUpdateTime = 0;
@@ -192,11 +189,11 @@ void updateXKeyLEDs() {
       ledChanged = true;
     } else if (status->isPopulated && !status->isOn) {
       // Key populated but not on - use offBrightness
-      setXKeyLED(i, status->red, status->green, status->blue, offBrightness);
+      setXKeyLED(i, status->red, status->green, status->blue, config.offBrightness);
       ledChanged = true;
     } else if (status->isPopulated && status->isOn) {
       // Key populated and on - use onBrightness
-      setXKeyLED(i, status->red, status->green, status->blue, onBrightness);
+      setXKeyLED(i, status->red, status->green, status->blue, config.onBrightness);
       ledChanged = true;
     }
   }
@@ -244,9 +241,9 @@ void xkeyFadeSequenceBounce(unsigned long STAGGER_DELAY, unsigned long COLOR_CYC
     if (!status->isPopulated) {
       originalStates[i].brightness = 0.0;
     } else if (status->isPopulated && !status->isOn) {
-      originalStates[i].brightness = offBrightness;
+      originalStates[i].brightness = config.offBrightness;
     } else {
-      originalStates[i].brightness = onBrightness;
+      originalStates[i].brightness = config.onBrightness;
     }
     
     // Start with black LEDs
@@ -389,21 +386,12 @@ void xkeyFadeSequenceBounce(unsigned long STAGGER_DELAY, unsigned long COLOR_CYC
 // SENSITIVITY LED FEEDBACK FUNCTIONS
 // ================================
 
-void updateRelativeSensitivityLEDs() {
-  // Show both relative and absolute sensitivity simultaneously
-  updateBothSensitivityLEDs();
-}
 
-void updateAbsoluteSensitivityLEDs() {
-  // Show both relative and absolute sensitivity simultaneously  
-  updateBothSensitivityLEDs();
-}
-
-void updateBothSensitivityLEDs() {
+void updateSensitivityLEDs() {
   // Show relative sensitivity on XKeys 1-8 (green)
   for (int i = 0; i < 8; i++) {
-    if (i < relativeEncoderSensitivity) {
-      setXKeyLED(i, 0, 127, 0, onBrightness);      // Green for active levels
+    if (i < config.relativeEncoderSensitivity) {
+      setXKeyLED(i, 0, 127, 0, config.onBrightness);      // Green for active levels
     } else {
       setXKeyLED(i, 0, 0, 0, 0.0);                 // Off for inactive levels
     }
@@ -411,8 +399,8 @@ void updateBothSensitivityLEDs() {
   
   // Show absolute sensitivity on XKeys 9-16 (blue)
   for (int i = 8; i < 16; i++) {
-    if ((i - 8) < absoluteEncoderSensitivity) {
-      setXKeyLED(i, 0, 0, 127, onBrightness);      // Blue for active levels
+    if ((i - 8) < config.absoluteEncoderSensitivity) {
+      setXKeyLED(i, 0, 0, 127, config.onBrightness);      // Blue for active levels
     } else {
       setXKeyLED(i, 0, 0, 0, 0.0);                 // Off for inactive levels
     }
