@@ -8,7 +8,7 @@
 // ================================
 
 // GPIO pins for encoder a/b
-const int enc_pins[N_ENCODERS][2] = {
+const int ENC_PINS[N_ENCODERS][2] = {
   {0,1}, {2,3}, {4,5}, {6,7}, {8,9}, {11,12}, {14,15},
   {16,17}, {18,19}, {20,21}, {22,23}, {24,25}, {26,27}
 };
@@ -19,14 +19,14 @@ const int BUTTON_PIN[N_BUTTONS] = {
 };
 
 // first 5 are for attribute encoders, next 8 are for XKeys encoders
-const byte midi_note[N_ENCODERS] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+const byte ENCODER_NOTES[N_ENCODERS] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
 
 // first 5 for encoders, next 8 for XKeys, last one for inner outter flip
-const byte buttonNotes[N_BUTTONS] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14};
+const byte BUTTON_NOTES[N_BUTTONS] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14};
 
 // Here you can play with the velocity scaling to get the sensitivity you like
 // This works well for me with no accel in Pro Plugins Midi Encoders plugin
-const int velocityScales[8][8] = {
+const int VELOCITY_SCALES[8][8] = {
   {1, 1, 1, 1, 1, 1, 2, 2},    // Level 1: Very slow (added variation)
   {1, 1, 1, 1, 1, 2, 2, 3},    // Level 2: Slow
   {1, 1, 1, 1, 2, 2, 3, 3},    // Level 3: Somewhat slow
@@ -63,7 +63,7 @@ bool adjustMode = false;                  // True when button 14 is held down fo
 bool sensitivityMode = false;             // True when actively adjusting sensitivity (blocks normal LED updates)
 unsigned long encoderFlipHoldTime = 0;       // Time when button 14 was pressed
 
-const int encoderFlipHoldDuration = 500;   // Time is ms to determin a hold and not a press
+const int ENCODER_FLIP_HOLD_DURATION = 500;   // Time is ms to determin a hold and not a press
 
 // ================================
 // ENCODER AND BUTTON FUNCTIONS
@@ -71,7 +71,7 @@ const int encoderFlipHoldDuration = 500;   // Time is ms to determin a hold and 
 
 void initializeEncoders() {
   for (int i = 0; i < N_ENCODERS; i++) {
-    encoders[i] = new Encoder(enc_pins[i][0], enc_pins[i][1]);
+    encoders[i] = new Encoder(ENC_PINS[i][0], ENC_PINS[i][1]);
     lastPos[i] = encoders[i]->read();
 
     if (i >= 5) {
@@ -110,7 +110,7 @@ void handleButtons() {
     if ((millis() - lastDebounceTime[i]) > debounceDelay) {
       if (reading != buttonPState[i]) {
         lastDebounceTime[i] = millis();
-        int note = buttonNotes[i];
+        int note = BUTTON_NOTES[i];
         int velocity;
         
         if (i == 13) {
@@ -133,7 +133,7 @@ void handleButtons() {
               updateXKeyLEDs();
               
               // Only toggle latch if it was a quick press (less than 500ms)
-              if (holdDuration < encoderFlipHoldDuration) {
+              if (holdDuration < ENCODER_FLIP_HOLD_DURATION) {
                 latchButtonState = !latchButtonState;
                 velocity = latchButtonState ? 127 : 0;
                 digitalWrite(LATCH_LED_PIN, latchButtonState ? HIGH : LOW);
@@ -178,7 +178,7 @@ void sendMidiEncoder(int index, int direction) {
   if ((index == 4 || index == 5 || index == 10 || index == 11 || index == 12) && adjustMode) {
     // Calculate step size using same velocity scaling as normal encoders
     int level = constrain((int)(elapsed / 15), 0, 7);
-    int baseStep = velocityScales[4][7 - level]; // Use level 5 scale for consistent adjustment speed
+    int baseStep = VELOCITY_SCALES[4][7 - level]; // Use level 5 scale for consistent adjustment speed
     
     if (index == 4) {
       // Encoder 5 controls relativeEncoderSensitivity
@@ -254,10 +254,10 @@ void sendMidiEncoder(int index, int direction) {
   const int* currentScale;
   if (index < 5) {
     // Relative encoders (0-4): use relative sensitivity
-    currentScale = velocityScales[config.relativeEncoderSensitivity - 1];
+    currentScale = VELOCITY_SCALES[config.relativeEncoderSensitivity - 1];
   } else {
     // Absolute encoders (5-12): use absolute sensitivity  
-    currentScale = velocityScales[config.absoluteEncoderSensitivity - 1];
+    currentScale = VELOCITY_SCALES[config.absoluteEncoderSensitivity - 1];
   }
 
   if (index < 5) {
@@ -284,14 +284,14 @@ void sendMidiEncoder(int index, int direction) {
     final_value = encoderValues[index];
   }
 
-  usbMIDI.sendControlChange(midi_note[index], final_value, midiCh, 0);
+  usbMIDI.sendControlChange(ENCODER_NOTES[index], final_value, midiCh, 0);
   midiDataPending = true;
 
   if (index >= 5) {
     debugPrintf("[ENCODER] Index: %d | Dir: %s | CC: %d | Value Sent: %d | Stored: %d | Elapsed: %lu ms", 
-               index, direction > 0 ? "+" : "-", midi_note[index], final_value, encoderValues[index], elapsed);
+               index, direction > 0 ? "+" : "-", ENCODER_NOTES[index], final_value, encoderValues[index], elapsed);
   } else {
     debugPrintf("[ENCODER] Index: %d | Dir: %s | CC: %d | Value Sent: %d | Elapsed: %lu ms", 
-               index, direction > 0 ? "+" : "-", midi_note[index], final_value, elapsed);
+               index, direction > 0 ? "+" : "-", ENCODER_NOTES[index], final_value, elapsed);
   }
 }

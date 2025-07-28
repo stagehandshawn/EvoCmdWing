@@ -54,8 +54,12 @@
 
 ## Overview
  - Sends custom keys to grandMA3 onPC when paired with `/help_files/EvoCmdWingv0.2_keyboard_shortcuts.xml` you will have a nice control surface.
- - LED feedback for XKeys.  
- - 8 extra encoders for XKeys 1-8 with added Press action. 
+ - LED feedback for XKeys with manual brightness adjustment  
+   - Hold "Encoder Flip" button and Rotate Encoder 11 (logo), 12 (Sequence Off brightness), 13(Sequence On brightness)
+ - 5 Relative Attribute Encoders
+   - Sensitivity adjustment - Hold "Encoder Flip" button and adjust using Encoder 5 - XKeys will show level (1-8)
+ - 8 Absolute XKey Encoders
+   - Sensitivity adjustment - Hold "Encoder Flip" button and adjust using Encoder 6 - XKeys will show level (1-8)
  - Keyboard compiled using QMK firmware.  
  - Designed with
    - D-Type panel mount openings for changes/additions later without reprinting (e.g., adding Art-net to DMX module, hardware midi, or LTC generator)
@@ -84,11 +88,12 @@
 ![midiRemotes](https://raw.githubusercontent.com/stagehandshawn/EvoCmdWing/main/help_files/XKey_MidiRemote_setup.png)
 
 
-#### [Pro Plugins MidiEncoders](https://www.ma3-pro-plugins.com/midi-encoders)
+#### [Pro Plugins MidiEncoders](https://www.ma3-pro-plugins.com/midi-encoders)  
  - Required for taking Midi input and controlling the attribute encoders.  
  - Use Midi Standard and Relative Mode 3.  
- - Top backlit button used to flip from Inner/Outter encoder usage.  
+ - The top backlit button refered to as "Encoder Flip" is used to flip from Inner/Outter encoder usage, USE CC 14.
 
+![midi_encoders_settings](https://raw.githubusercontent.com/stagehandshawn/EvoCmdWing/main/help_files/midi_encoders_settings.png)
 
 ## Full Instructions comming soon, for now...
  - Check the [Wiki](https://github.com/stagehandshawn/EvoCmdWing/wiki)  

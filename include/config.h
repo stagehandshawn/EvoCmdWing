@@ -27,7 +27,7 @@ const int N_ENCODERS = 13;
 const int N_BUTTONS = 14;
 
 // GPIO pins for encoder a/b
-extern const int enc_pins[N_ENCODERS][2];
+extern const int ENC_PINS[N_ENCODERS][2];
 
 // GPIO pin for encoder click, and inner outter button
 extern const int BUTTON_PIN[N_BUTTONS];
@@ -36,14 +36,14 @@ extern const int BUTTON_PIN[N_BUTTONS];
 // MIDI CONFIGURATION
 // ================================
 // first 5 are for attribute encoders, next 8 are for XKeys encoders
-extern const byte midi_note[N_ENCODERS];
+extern const byte ENCODER_NOTES[N_ENCODERS];
 
 // first 5 for encoders, next 8 for XKeys, last one for inner outter flip
-extern const byte buttonNotes[N_BUTTONS];
+extern const byte BUTTON_NOTES[N_BUTTONS];
 
 // Here you can play with the velocity scaling to get the sensitivity you like
 // This works well for me with no accel in Pro Plugins Midi Encoders plugin
-extern const int velocityScales[8][8];
+extern const int VELOCITY_SCALES[8][8];
 
 // Note: Encoder sensitivity variables are now in the config struct (eeprom.h)
 

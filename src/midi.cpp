@@ -1,5 +1,5 @@
 #include "midi.h"
-#include "neopixel.h"  // For LED updates
+#include "neopixel.h"
 #include "utils.h"
 #include <MIDIUSB.h>
 
@@ -39,7 +39,7 @@ void handleIncomingMIDI() {
       if (ch == midiCh) {
         // Channel 1: Encoder feedback
         for (int i = 5; i < N_ENCODERS; i++) {
-          if (d1 == midi_note[i]) {
+          if (d1 == ENCODER_NOTES[i]) {
             encoderValues[i] = constrain(d2, 0, 127);
             debugPrintf("[MIDI IN CH1] CC Update - Encoder %d | CC: %d | Value: %d", (i + 1), d1, encoderValues[i]);
             break;
@@ -247,7 +247,7 @@ void handleStatusMIDI(byte ch, byte cc, byte value) {
   // Update LED for changed XKey and display complete status
   if (xkeyIndex >= 0 && xkeyIndex < 16) {
     ExecutorStatus* status = &pageData[currentPage][xkeyIndex];
-    int xkeyNumber = xkeyIndex + 1;
+    //int xkeyNumber = xkeyIndex + 1;
     
     // Update LED immediately for this XKey
     if (!status->isPopulated) {
