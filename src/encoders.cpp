@@ -26,15 +26,16 @@ const byte BUTTON_NOTES[N_BUTTONS] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14};
 
 // Here you can play with the velocity scaling to get the sensitivity you like
 // This works well for me with no accel in Pro Plugins Midi Encoders plugin
+// 10/75 are the max values that ProPlugins will accept
 const int VELOCITY_SCALES[8][8] = {
-  {1, 1, 1, 1, 1, 1, 2, 2},    // Level 1: Very slow (added variation)
+  {1, 1, 1, 1, 1, 1, 2, 2},    // Level 1: Very slow
   {1, 1, 1, 1, 1, 2, 2, 3},    // Level 2: Slow
   {1, 1, 1, 1, 2, 2, 3, 3},    // Level 3: Somewhat slow
   {1, 1, 1, 2, 2, 3, 4, 4},    // Level 4: Slightly slow
   {1, 1, 2, 2, 3, 4, 5, 6},    // Level 5: Current default (good starting point)
   {1, 2, 3, 4, 5, 6, 7, 8},    // Level 6: Slightly fast
-  {2, 3, 4, 5, 6, 8, 10, 12},  // Level 7: Fast
-  {3, 4, 6, 8, 10, 12, 15, 18} // Level 8: Very fast
+  {2, 3, 4, 5, 6, 8, 9, 10},  // Level 7: Fast
+  {3, 4, 5, 6, 7, 8, 10, 10} // Level 8: Very fast
 };
 
 // Array to store current values for encoders 5-12 (absolute mode)
