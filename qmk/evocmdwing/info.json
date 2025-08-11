@@ -1,10 +1,10 @@
 {
-    "keyboard_name": "evocmdwingkeyboard",
+    "keyboard_name": "evocmdwing",
     "manufacturer": "ShawnR",
     "usb": {
         "vid": "0x1209",
         "pid": "0x345C",
-        "device_version": "1.0.0",
+        "device_version": "0.2.1",
         "max_power": 100
     },
     "features": {
@@ -22,7 +22,7 @@
     },
     "matrix_pins": {
     "cols": ["LINE_PIN0", "LINE_PIN1", "LINE_PIN2", "LINE_PIN3", "LINE_PIN4", "LINE_PIN5", "LINE_PIN6", "LINE_PIN7", "LINE_PIN8", "LINE_PIN9", "LINE_PIN10", "LINE_PIN11", "LINE_PIN12", "LINE_PIN14"],
-    "rows": ["LINE_PIN16", "LINE_PIN17", "LINE_PIN18", "LINE_PIN19", "LINE_PIN20", "LINE_PIN21", "LINE_PIN22", "LINE_PIN23", "LINE_PIN28", "LINE_PIN30"]
+    "rows": ["LINE_PIN15", "LINE_PIN16", "LINE_PIN17", "LINE_PIN18", "LINE_PIN19", "LINE_PIN20", "LINE_PIN21", "LINE_PIN22", "LINE_PIN23", "LINE_PIN24"]
 
     },
     "diode_direction": "COL2ROW",
