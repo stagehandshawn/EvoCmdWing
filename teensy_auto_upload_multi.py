@@ -8,7 +8,7 @@ import subprocess
 # -------------------- CONFIG --------------------
 hex_file = ".pio/build/teensy41/firmware.hex"
 teensy_cli = os.path.expanduser("~/.platformio/packages/tool-teensy/teensy_loader_cli")
-
+n
 # ------------------ CHECK HEX ------------------
 if not os.path.exists(hex_file):
     print(f"[ERROR] Firmware not found at {hex_file}")
@@ -123,8 +123,20 @@ def select_teensy(teensys):
         return None
     elif len(teensys) == 1:
         port, name = teensys[0]
-        print(f"\n[AUTO] Only one Teensy found: {port} - {name}")
-        return port
+        print(f"\n[FOUND] One Teensy found: {port} - {name}")
+        # Always require explicit confirmation even if only one device
+        while True:
+            try:
+                ans = input("Proceed to upload to this device? (y/N): ").strip().lower()
+                if ans in ("y", "yes"):
+                    print(f"[SELECT] Confirmed: {port} - {name}")
+                    return port
+                elif ans in ("n", "no", ""):
+                    print("[CANCEL] Upload cancelled by user")
+                    return None
+            except KeyboardInterrupt:
+                print("\n[CANCEL] Upload cancelled by user")
+                return None
     else:
         print(f"\n[SELECT] Found {len(teensys)} Teensys:")
         for i, (port, name) in enumerate(teensys):
