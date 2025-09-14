@@ -60,7 +60,7 @@
    - Sensitivity adjustment - Hold "Encoder Flip" button and adjust using Encoder 5 - XKeys will show level (1-8)
  - 8 Absolute XKey Encoders
    - Sensitivity adjustment - Hold "Encoder Flip" button and adjust using Encoder 6 - XKeys will show level (1-8)
- - Keyboard now uses custom keyboard firmware (better enumeration than QMK) [EvoCmdWingKeyboard](https://github.com/stagehandshawn/EvoCmdWing) You can find the compiled firmware here
+ - Keyboard now uses custom keyboard firmware (better enumeration than QMK) [EvoCmdWingKeyboard](https://github.com/stagehandshawn/EvoCmdWingKeyboard) You can find the compiled firmware here
  - Designed with
    - D-Type panel mount openings for changes/additions later without reprinting (e.g., adding Art-net to DMX module, hardware midi, or LTC generator)
    - Extra stand-offs for adding prototype boards for extra design options
