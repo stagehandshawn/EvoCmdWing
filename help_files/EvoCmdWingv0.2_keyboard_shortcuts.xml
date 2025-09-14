@@ -14,7 +14,7 @@
         
         <!-- ===== VIEW MODES ===== -->
         <KeyboardShortcut Lock="Yes" KeyCode="HIGHLIGHT" Shortcut="Alt+H" />
-        <KeyboardShortcut Lock="Yes" KeyCode="SOLO" Shortcut="Alt+E" />
+        <KeyboardShortcut Lock="Yes" KeyCode="SOLO" Shortcut="Alt+G" />
         <KeyboardShortcut Lock="Yes" KeyCode="FREEZE" Shortcut="Alt+B" />
         <KeyboardShortcut Lock="Yes" KeyCode="PREVIEW" Shortcut="Alt+W" />
         <KeyboardShortcut Lock="Yes" KeyCode="BLIND" Shortcut="Alt+V" />
