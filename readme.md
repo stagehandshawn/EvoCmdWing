@@ -60,7 +60,7 @@
    - Sensitivity adjustment - Hold "Encoder Flip" button and adjust using Encoder 5 - XKeys will show level (1-8)
  - 8 Absolute XKey Encoders
    - Sensitivity adjustment - Hold "Encoder Flip" button and adjust using Encoder 6 - XKeys will show level (1-8)
- - Keyboard compiled using QMK firmware.  
+ - Keyboard now uses custom keyboard firmware (better enumeration than QMK) [EvoCmdWingKeyboard](https://github.com/stagehandshawn/EvoCmdWing) You can find the compiled firmware here
  - Designed with
    - D-Type panel mount openings for changes/additions later without reprinting (e.g., adding Art-net to DMX module, hardware midi, or LTC generator)
    - Extra stand-offs for adding prototype boards for extra design options
@@ -72,6 +72,10 @@
 
 - [Wiring Diagrams](https://github.com/stagehandshawn/EvoCmdWing/wiki/Wiring-Diagrams)
 
+## Required firmware for keyboard
+- There is now a folder `./keyboard_custom_firmware` that has custom keyboard firmware for the keyboard
+- I have left the QMK firmware but the custom keyboard works better with windows as I had some trouble with disconneting and reconneting the EvoCmdWing requiring a reboot for the keyboard to enumerate.
+- You can also find the repo with the code to the custom keyboard here [EvoCmdWingKeyboard](https://github.com/stagehandshawn/EvoCmdWingKeyboard)
 
 ## Required Plugins
 #### EvoCmdWingMidi
