@@ -4,6 +4,7 @@
         
         <!-- ===== NAVIGATION AND VIEW CONTROLS ===== -->
         <KeyboardShortcut Lock="Yes" KeyCode="PREV" Shortcut="Alt+P" />
+        <KeyboardShortcut Lock="Yes" KeyCode="SET" Shortcut="Alt+E" />
         <KeyboardShortcut Lock="Yes" KeyCode="NEXT" Shortcut="Alt+N" />
         <KeyboardShortcut Lock="Yes" KeyCode="UP" Shortcut="Alt+U" />
         <KeyboardShortcut Lock="Yes" KeyCode="DOWN" Shortcut="Alt+D" />
