@@ -95,7 +95,7 @@
 #### [Pro Plugins MidiEncoders](https://www.ma3-pro-plugins.com/midi-encoders)  
  - Required for taking Midi input and controlling the attribute encoders.  
  - Use Midi Standard and Relative Mode 3.  
- - The top backlit button refered to as "Encoder Flip" is used to flip from Inner/Outter encoder usage, USE CC 14.
+ - The top backlit button refered to as "Encoder Flip" is used to flip from Inner/Outter encoder usage, USE NOTE 14.
 
 ![midi_encoders_settings](https://raw.githubusercontent.com/stagehandshawn/EvoCmdWing/main/help_files/midi_encoders_settings.png)
 
