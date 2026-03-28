@@ -168,7 +168,7 @@
         <!-- ===== OPERATOR KEYS ===== -->
         <KeyboardShortcut Lock="Yes" KeyCode="PLUS" Shortcut="Alt+Equal" />
         <KeyboardShortcut Lock="Yes" KeyCode="MINUS" Shortcut="Minus" />
-        <KeyboardShortcut Lock="Yes" KeyCode="THRU" Shortcut="Alt+T" />
+        <KeyboardShortcut Lock="Yes" KeyCode="THRU" Shortcut="T" />
         <KeyboardShortcut Lock="Yes" KeyCode="DOT" Shortcut="Period" />
         <KeyboardShortcut Lock="Yes" KeyCode="IF" Shortcut="Alt+8" />
         <KeyboardShortcut Lock="Yes" KeyCode="AT" Shortcut="Alt+2" />
